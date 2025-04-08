@@ -85,7 +85,6 @@ async def get_thumb(videoid: str):
         background.paste(logo, (100, 150))
 
         draw = ImageDraw.Draw(background)
-        draw.text((285, 180), "DeadlineTech Bots", (192, 192, 192), font=FONTS["nfont"])
         arial = ImageFont.truetype("AnonXMusic/assets/font2.ttf", 30)
         font = ImageFont.truetype("AnonXMusic/assets/font.ttf", 30)
         tfont = ImageFont.truetype("AnonXMusic/assets/font3.ttf", 45)
