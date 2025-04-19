@@ -7,7 +7,7 @@ LOGGER(__name__).info("Connecting to your Mongo Database...")
 try:
     _mongo_async_ = AsyncIOMotorClient(MONGO_DB_URI)
     mongodb = _mongo_async_.Anon
-    LOGGER(__name__)info("Connected to your Mongo Database.")
+    LOGGER(__name__).info("Connected to your Mongo Database.")
 
 # Get chats and users collections
     chats_collection = mongodb["chats"]
