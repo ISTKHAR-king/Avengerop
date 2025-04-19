@@ -196,3 +196,55 @@ async def gbanned_list(client, message: Message, _):
         return await mystic.edit_text(msg, reply_markup=InlineKeyboardMarkup([
             [InlineKeyboardButton("Refresh List", callback_data="refresh_gban_list")]
         ]))
+
+@app.on_callback_query()
+async def on_callback_query(client, callback_query):
+    data = callback_query.data
+    user = callback_query.from_user
+
+    if data.startswith("cancel_ban_"):
+        user_id = int(data.split("_")[2])
+        # Handle cancel ban action (remove from banning process or notify admin)
+        await callback_query.answer(f"❌ Ban process for {user_id} canceled.")
+        return
+
+    if data.startswith("cancel_unban_"):
+        user_id = int(data.split("_")[2])
+        # Handle cancel unban action (remove from unbanning process or notify admin)
+        await callback_query.answer(f"❌ Unban process for {user_id} canceled.")
+        return
+
+    if data == "refresh_gban_list":
+        # Refresh the list of global banned users
+        await gbanned_list(client, callback_query.message, _)
+        return
+
+
+from pyrogram import filters
+from pyrogram.types import Message
+
+# Helper function to check if a user is globally banned
+async def is_banned_user(user_id):
+    # Replace with your actual logic to check if the user is globally banned
+    return user_id in BANNED_USERS
+
+
+# Listen to all messages in the group
+@app.on_message(filters.chat(SOME_CHAT_ID))  # Filter by the specific chat or use `filters.group` for all groups
+async def delete_gbanned_user_message(client, message: Message):
+    if not message.from_user:
+        return
+
+    user = message.from_user
+    # Check if the user is globally banned
+    is_gbanned = await is_banned_user(user.id)
+    
+    if is_gbanned:
+        # Check if the user is an admin in the current group
+        chat_member = await client.get_chat_member(message.chat.id, user.id)
+        if chat_member.status in ["administrator", "creator"]:  # Check if the user is an admin
+            # Delete the message
+            await message.delete()
+
+            # Optionally, send a notification to the group or log it
+            await message.reply_text(f"⚠️ The message from the globally banned user {user.mention} was deleted.", quote=True)
