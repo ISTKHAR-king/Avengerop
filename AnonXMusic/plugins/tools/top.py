@@ -72,9 +72,9 @@ async def show_overall_leaderboard(client, callback_query):
     for i, (group_id, count) in enumerate(leaderboard, 1):
         try:
             chat = await client.get_chat(group_id)
-            text += f"**{i}. {chat.title}** — {count} songs\n"
+            text += f"**{i}. {chat.title.ljust(30)}** — {str(count).rjust(3)} songs\n"
         except:
-            text += f"**{i}. [Group ID: {group_id}]** — {count} songs\n"
+            text += f"**{i}. [Group ID: {group_id}]** — {str(count).rjust(3)} songs\n"
 
     await callback_query.message.edit_text(text)
 
@@ -95,9 +95,9 @@ async def show_today_leaderboard(client, callback_query):
     for i, (group_id, count) in enumerate(leaderboard, 1):
         try:
             chat = await client.get_chat(group_id)
-            text += f"**{i}. {chat.title}** — {count} songs\n"
+            text += f"**{i}. {chat.title.ljust(30)}** — {str(count).rjust(3)} songs\n"
         except:
-            text += f"**{i}. [Group ID: {group_id}]** — {count} songs\n"
+            text += f"**{i}. [Group ID: {group_id}]** — {str(count).rjust(3)} songs\n"
 
     await callback_query.message.edit_text(text)
 
@@ -121,9 +121,9 @@ async def show_weekly_leaderboard(client, callback_query):
     for i, (group_id, count) in enumerate(leaderboard, 1):
         try:
             chat = await client.get_chat(group_id)
-            text += f"**{i}. {chat.title}** — {count} songs\n"
+            text += f"**{i}. {chat.title.ljust(30)}** — {str(count).rjust(3)} songs\n"
         except:
-            text += f"**{i}. [Group ID: {group_id}]** — {count} songs\n"
+            text += f"**{i}. [Group ID: {group_id}]** — {str(count).rjust(3)} songs\n"
 
     await callback_query.message.edit_text(text)
 
@@ -144,17 +144,19 @@ async def show_top_users(client, callback_query):
     for i, (user_id, count) in enumerate(leaderboard, 1):
         try:
             user = await client.get_users(int(user_id))
-            text += f"**{i}. {user.first_name}** — {count} songs\n"
+            text += f"**{i}. {user.first_name.ljust(15)}** — {str(count).rjust(3)} songs\n"
         except:
-            text += f"**{i}. [User ID: {user_id}]** — {count} songs\n"
+            text += f"**{i}. [User ID: {user_id}]** — {str(count).rjust(3)} songs\n"
 
     await callback_query.message.edit_text(text)
 
-# Update song count when a song is played
-@app.on_message(filters.command("play"))  # Replace with your actual play trigger
+# Update song count when a song is played via /play or /vplay
+@app.on_message(filters.text & filters.command())
 async def song_played(client, message: Message):
-    group_id = message.chat.id
-    user_id = message.from_user.id
-    await update_song_count(group_id, user_id)
-    await message.reply_text(f"🎶 **{message.from_user.first_name}** played a song in {message.chat.title}!")
+    if message.text.startswith(("/play", "/vplay")):  # Check if command is /play or /vplay
+        if not message.from_user:
+            return  # skip if no user info (like anonymous admin or channel)
 
+        group_id = message.chat.id
+        user_id = message.from_user.id
+        await update_song_count(group_id, user_id)
