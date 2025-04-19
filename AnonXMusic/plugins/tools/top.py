@@ -127,7 +127,7 @@ async def show_weekly_leaderboard(client, callback_query):
 
     await callback_query.message.edit_text(text)
 
-# Helper: Show top users overall
+# Helper: Show top users overall (with mentions)
 async def show_top_users(client, callback_query):
     records = song_stats_db.find({})
     user_counter = {}
@@ -144,11 +144,11 @@ async def show_top_users(client, callback_query):
     for i, (user_id, count) in enumerate(leaderboard, 1):
         try:
             user = await client.get_users(int(user_id))
-            text += f"**{i}. {user.first_name.ljust(15)}** — {str(count).rjust(3)} songs\n"
+            text += f"**{i}.** [{user.first_name}](tg://user?id={user.id}) — {count} songs\n"
         except:
-            text += f"**{i}. [User ID: {user_id}]** — {str(count).rjust(3)} songs\n"
+            text += f"**{i}. [User ID: {user_id}]** — {count} songs\n"
 
-    await callback_query.message.edit_text(text)
+    await callback_query.message.edit_text(text, disable_web_page_preview=True)
 
 # Update song count when a song is played via /play or /vplay
 @app.on_message(filters.text & filters.command())
