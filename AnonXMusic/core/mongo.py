@@ -4,8 +4,6 @@ from ..logging import LOGGER
 import asyncio
 
 logger = LOGGER(__name__)
-
-async def init_database():
     logger.info("Connecting to your Mongo Database...")
     try:
         _mongo_async_ = AsyncIOMotorClient(MONGO_DB_URI)
@@ -23,7 +21,12 @@ async def init_database():
         logger.info(f"Total Migrated Chats: {chats_count}")
         logger.info(f"Total Migrated Users: {users_count}")
 
+        return mongodb
+
     except Exception as e:
         logger.error(f"Failed to connect to your Mongo Database. Error: {e}")
         exit()
 
+# Run database initialization if this file is the entry point
+if __name__ == "__main__":
+    asyncio.run(init_database())
