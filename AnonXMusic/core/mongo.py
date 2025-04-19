@@ -23,8 +23,7 @@ async def init_database():
         logger.info(f"Total Migrated Chats: {chats_count}")
         logger.info(f"Total Migrated Users: {users_count}")
 
-        return mongodb
-
     except Exception as e:
         logger.error(f"Failed to connect to your Mongo Database. Error: {e}")
         exit()
+
