@@ -4,7 +4,7 @@ from ..logging import LOGGER
 import asyncio
 
 logger = LOGGER(__name__)
-    logger.info("Connecting to your Mongo Database...")
+       logger.info("Connecting to your Mongo Database...")
     try:
         _mongo_async_ = AsyncIOMotorClient(MONGO_DB_URI)
         mongodb = _mongo_async_.Anon
