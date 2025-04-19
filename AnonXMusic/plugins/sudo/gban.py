@@ -223,14 +223,15 @@ async def on_callback_query(client, callback_query):
 from pyrogram import filters
 from pyrogram.types import Message
 
+# Ensure BANNED_USERS is a set of banned user IDs
+BANNED_USERS = set()  # Example: BANNED_USERS = {12345, 67890}
+
 # Helper function to check if a user is globally banned
 async def is_banned_user(user_id):
-    # Replace with your actual logic to check if the user is globally banned
     return user_id in BANNED_USERS
 
-
 # Listen to all messages in the group
-@app.on_message(filters.chat(SOME_CHAT_ID))  # Filter by the specific chat or use `filters.group` for all groups
+@app.on_message(filters.group)  # This will apply to all groups
 async def delete_gbanned_user_message(client, message: Message):
     if not message.from_user:
         return
@@ -238,7 +239,7 @@ async def delete_gbanned_user_message(client, message: Message):
     user = message.from_user
     # Check if the user is globally banned
     is_gbanned = await is_banned_user(user.id)
-    
+
     if is_gbanned:
         # Check if the user is an admin in the current group
         chat_member = await client.get_chat_member(message.chat.id, user.id)
