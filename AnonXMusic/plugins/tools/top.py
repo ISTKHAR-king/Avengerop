@@ -1,6 +1,6 @@
 from pyrogram import Client, filters
 from pyrogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton
-from AnonXMusic.Core.mongo import mongodb
+from AnonXMusic.core.mongo import mongodb
 from datetime import datetime, timedelta
 from operator import itemgetter
 
@@ -160,3 +160,64 @@ async def song_played(client, message: Message):
         group_id = message.chat.id
         user_id = message.from_user.id
         await update_song_count(group_id, user_id)
+
+
+# Helper: Get user's song count and rank
+async def get_user_profile(user_id):
+    user_counter = {}
+
+    # Fetch all song stats
+    records = song_stats_db.find({})
+    async for record in records:
+        for u_id, count in record.get("users", {}).items():
+            if u_id == str(user_id):
+                user_counter[u_id] = user_counter.get(u_id, 0) + count
+
+    # Sort users by song count
+    leaderboard = sorted(user_counter.items(), key=itemgetter(1), reverse=True)
+
+    # Get the user's rank
+    user_rank = next((i + 1 for i, (u_id, count) in enumerate(leaderboard) if u_id == str(user_id)), None)
+
+    user_song_count = user_counter.get(str(user_id), 0)
+    
+    return user_song_count, user_rank
+
+# Default image URL (could be a placeholder image link)
+DEFAULT_IMAGE = "https://example.com/default_profile_image.jpg"
+
+# Command: /profile
+@app.on_message(filters.command("profile") & filters.group)  # Only eligible in groups
+async def user_profile(client, message: Message):
+    user_id = message.from_user.id
+    user_song_count, user_rank = await get_user_profile(user_id)
+
+    # Fetch the user's profile photo
+    profile_photos = await client.get_user_profile_photos(user_id)
+    profile_photo = profile_photos[0].file_id if profile_photos.total_count > 0 else DEFAULT_IMAGE
+
+    if user_song_count == 0:
+        text = "Your Profile\n\nYou haven't played any songs yet."
+    else:
+        text = "𝗠𝘂𝘀𝗶𝗰𝗮𝗹 𝗜𝗻𝗳𝗼 📢\n\n"
+        text += f"📝 Name: {message.from_user.first_name}\n"
+        text += f"✨ Username: @{message.from_user.username if message.from_user.username else 'N/A'}\n"
+        text += f"🆔 User ID: {user_id}\n"
+        text += f"🎶 Songs Played: {user_song_count}\n"
+        text += f"♨️ Rank: #{user_rank}"
+
+    # Create a close button
+    close_button = InlineKeyboardMarkup([
+        [InlineKeyboardButton("⏹ Close", callback_data="close_profile")]
+    ])
+    
+    # Send the message with the user's profile photo and the close button
+    if profile_photo != DEFAULT_IMAGE:
+        await message.reply_photo(profile_photo, caption=text, reply_markup=close_button)
+    else:
+        await message.reply_photo(DEFAULT_IMAGE, caption=text, reply_markup=close_button)
+    
+    # Handle callback for closing the message
+    @app.on_callback_query(filters.regex("close_profile"))
+    async def close_profile(client, callback_query):
+        await callback_query.message.delete()
