@@ -18,6 +18,7 @@ from AnonXMusic.utils.decorators.language import language
 from AnonXMusic.utils.formatters import alpha_to_int
 from config import adminlist
 
+
 REQUEST_LIMIT = 50
 BATCH_SIZE = 500
 BATCH_DELAY = 2
@@ -30,17 +31,17 @@ async def broadcast_command(client, message, _):
         return await message.reply_text("Reply to a message you want to broadcast.")
 
     command_text = message.text.lower()
-    target_chats, target_users = [], []
     mode = "forward" if "-forward" in command_text else "copy"
 
-    # Decide targets based on tag
     if "-all" in command_text:
-        target_chats = [int(chat["chat_id"]) for chat in await get_served_chats()]
-        target_users = [int(user["user_id"]) for user in await get_served_users()]
+        target_chats = [int(chat_id) for chat_id in await get_served_chats()]
+        target_users = [int(user_id) for user_id in await get_served_users()]
     elif "-users" in command_text:
-        target_users = [int(user["user_id"]) for user in await get_served_users()]
+        target_chats = []
+        target_users = [int(user_id) for user_id in await get_served_users()]
     elif "-chats" in command_text:
-        target_chats = [int(chat["chat_id"]) for chat in await get_served_chats()]
+        target_chats = [int(chat_id) for chat_id in await get_served_chats()]
+        target_users = []
     else:
         return await message.reply_text("Please use a valid tag: `-all`, `-users`, `-chats`.")
 
@@ -48,17 +49,38 @@ async def broadcast_command(client, message, _):
         return await message.reply_text("No targets found for broadcast.")
 
     start_time = time.time()
-    await message.reply_text(f"Broadcast started in `{mode}` mode...")
-
+    total_targets = len(target_chats) + len(target_users)
     sent_count, failed_count = 0, 0
-    targets = target_chats + target_users
+    all_targets = target_chats + target_users
+    total_batches = (len(all_targets) + BATCH_SIZE - 1) // BATCH_SIZE
+    batch_times = []
+
+    status_message = await message.reply_text(
+        f"**Broadcast started in `{mode}` mode.**\n"
+        f"**Total Targets:** `{total_targets}`\n"
+        f"**Progress:** `0%`\n"
+        f"**Successful:** `0`\n"
+        f"**Failed:** `0`\n"
+        f"`██████████`"
+    )
+
+    def make_progress_bar(percent):
+        filled_slots = int(percent // 10)
+        empty_slots = 10 - filled_slots
+        return "█" * filled_slots + "░" * empty_slots
+
+    def format_eta(seconds):
+        if seconds < 60:
+            return f"{int(seconds)} sec"
+        mins, secs = divmod(int(seconds), 60)
+        return f"{mins}m {secs}s"
 
     async def send_with_retries(chat_id):
         nonlocal sent_count, failed_count
         for attempt in range(MAX_RETRIES):
             try:
                 if mode == "forward":
-                    await app.forward_messages(chat_id, message.chat.id, message.reply_to_message.id)
+                    await app.forward_messages(chat_id, message.chat.id, message.reply_to_message.id, remove_caption=True)
                 else:
                     await message.reply_to_message.copy(chat_id)
                 sent_count += 1
@@ -70,8 +92,10 @@ async def broadcast_command(client, message, _):
         failed_count += 1
 
     async def broadcast_targets(target_list):
-        for i in range(0, len(target_list), BATCH_SIZE):
-            batch = target_list[i:i + BATCH_SIZE]
+        nonlocal sent_count, failed_count
+        for batch_num in range(0, len(target_list), BATCH_SIZE):
+            batch_start_time = time.time()
+            batch = target_list[batch_num:batch_num + BATCH_SIZE]
             tasks = []
             for chat_id in batch:
                 if len(tasks) >= REQUEST_LIMIT:
@@ -80,23 +104,39 @@ async def broadcast_command(client, message, _):
                 tasks.append(send_with_retries(chat_id))
             if tasks:
                 await asyncio.gather(*tasks)
+
+            batch_time = time.time() - batch_start_time
+            batch_times.append(batch_time)
+            average_batch_time = sum(batch_times) / len(batch_times)
+            batches_done = (batch_num // BATCH_SIZE) + 1
+            batches_left = total_batches - batches_done
+            eta = format_eta(average_batch_time * batches_left)
+
+            progress = round(((sent_count + failed_count) / total_targets) * 100, 2)
+            progress_bar = make_progress_bar(progress)
+            await status_message.edit_text(
+                f"**Broadcast In Progress...**\n\n"
+                f"**Mode:** `{mode}`\n"
+                f"**Total Targets:** `{total_targets}`\n"
+                f"**Successful:** `{sent_count}`\n"
+                f"**Failed:** `{failed_count}`\n"
+                f"**Progress:** `{progress}%`\n"
+                f"`{progress_bar}`\n"
+                f"**ETA:** `{eta}`"
+            )
             await asyncio.sleep(BATCH_DELAY)
 
-    await broadcast_targets(targets)
+    await broadcast_targets(all_targets)
 
     total_time = round(time.time() - start_time, 2)
-    total_targets = len(targets)
-
-    summary = (
-        f"**Broadcast Report**\n\n"
+    await status_message.edit_text(
+        f"**Broadcast Complete ✅**\n\n"
         f"**Mode:** `{mode}`\n"
         f"**Total Targets:** `{total_targets}`\n"
         f"**Successful:** `{sent_count}`\n"
         f"**Failed:** `{failed_count}`\n"
-        f"**Time Taken:** `{total_time} seconds`"
+        f"**Total Time:** `{total_time} seconds`"
     )
-
-    await message.reply_text(summary)
 
 
 async def auto_clean():
