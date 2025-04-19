@@ -21,12 +21,6 @@ logger = LOGGER(__name__)
         logger.info(f"Total Migrated Chats: {chats_count}")
         logger.info(f"Total Migrated Users: {users_count}")
 
-        return mongodb
-
     except Exception as e:
         logger.error(f"Failed to connect to your Mongo Database. Error: {e}")
         exit()
-
-# Run database initialization if this file is the entry point
-if __name__ == "__main__":
-    asyncio.run(init_database())
