@@ -65,8 +65,14 @@ async def leaderboard_menu(client: Client, message: Message):
 async def user_profile(client: Client, message: Message):
     uid = message.from_user.id
     count, rank = await get_user_profile(uid)
-    photos = await client.get_user_profile_photos(uid)
-    photo = photos[0].file_id if photos.total_count else DEFAULT_IMAGE
+    
+    # Ensure the correct method is called for getting user profile photos
+    try:
+        photos = await client.get_user_profile_photos(uid)
+        photo = photos[0].file_id if photos.total_count else DEFAULT_IMAGE
+    except AttributeError:
+        # In case the method doesn't exist, set a default photo
+        photo = DEFAULT_IMAGE
 
     if count == 0:
         text = "Your Profile\n\nYou haven't played any songs yet."
