@@ -245,7 +245,7 @@ async def show_top_users(client: Client, cq: CallbackQuery):
             text += f"{i}. 👤 Unknown[{user_id}] — {count} songs\n"
 
     text += f"\n🎵 𝗧𝗼𝘁𝗮𝗹 𝗣𝗹𝗮𝘆𝗲𝗱 𝗦𝗼𝗻𝗴𝘀: {total_songs}"
-   text += f"\n♨️ 𝗣𝗼𝘄𝗲𝗿𝗲𝗱 𝗯𝘆 :  {app.mention}"
+    text += f"\n♨️ 𝗣𝗼𝘄𝗲𝗿𝗲𝗱 𝗯𝘆 :  {app.mention}"
 
     kb = InlineKeyboardMarkup([[InlineKeyboardButton("🔙 Back", callback_data="back_leaderboard")]])
     await cq.message.edit_text(text, reply_markup=kb)
