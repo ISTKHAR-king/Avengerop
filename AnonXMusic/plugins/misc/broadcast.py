@@ -101,11 +101,11 @@ async def broadcast_command(client, message, _):
 
             progress_bar = f"[{'█' * int(percent//5)}{'░' * (20-int(percent//5))}]"
             await status_msg.edit_text(
-                f"Broadcast Progress:\n"
-                f"{progress_bar} `{percent}%`\n"
-                f"Sent: `{sent_count}` 🟢\n"
-                f"Failed: `{failed_count}` 🔴\n"
-                f"ETA: `{eta_formatted}` ⏳"
+                f"𝗕𝗿𝗼𝗮𝗱𝗰𝗮𝘀𝘁 𝗣𝗿𝗼𝗴𝗿𝗲𝘀𝘀 📢\n"
+                f"{progress_bar} {percent}%\n"
+                f"Sent:  {sent_count}  🟢\n"
+                f"Failed: {failed_count}  🔴\n"
+                f"ETA:  {eta_formatted} ⏳"
             )
 
     await broadcast_targets(targets)
@@ -113,12 +113,12 @@ async def broadcast_command(client, message, _):
     total_time = round(time.time() - start_time, 2)
 
     final_summary = (
-        f"Broadcast Report:\n\n"
-        f"Mode: `{mode}`\n"
-        f"Total Targets: `{total_targets}`\n"
-        f"Successful: `{sent_count}` 🟢\n"
-        f"Failed: `{failed_count}` 🔴\n"
-        f"Time Taken: `{total_time} seconds` ⏰"
+        f"✅𝗕𝗿𝗼𝗮𝗱𝗰𝗮𝘀𝘁 𝗥𝗲𝗽𝗼𝗿𝘁📢\n\n"
+        f"Mode: {mode}\n"
+        f"Total Targets: {total_targets}\n"
+        f"Successful: {sent_count}` 🟢\n"
+        f"Failed: {failed_count} 🔴\n"
+        f"Time Taken: {total_time} seconds` ⏰"
     )
 
     await status_msg.edit_text(final_summary)
@@ -140,12 +140,12 @@ async def broadcast_stats(_, message):
 
     res = last_broadcast_result
     await message.reply_text(
-        f"Last Broadcast Report:\n\n"
-        f"Mode: `{res['mode']}`\n"
-        f"Total Targets: `{res['total']}`\n"
-        f"Successful: `{res['sent']}` 🟢\n"
-        f"Failed: `{res['failed']}` 🔴\n"
-        f"Time Taken: `{res['time']} seconds` ⏰"
+        f"📝 Last Broadcast Report:\n\n"
+        f"♨️ Mode: {res['mode']}\n"
+        f"✨ Total Targets: {res['total']}\n"
+        f"✅ Successful: {res['sent']} \n"
+        f"⛔ Failed: {res['failed']} \n"
+        f"🔮 Time Taken: {res['time']} seconds ⏰"
     )
 
 async def auto_clean():
