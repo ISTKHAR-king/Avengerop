@@ -11,7 +11,7 @@ from AnonXMusic import app
 from AnonXMusic.utils.database import song_stats_db
 
 # Default placeholder image
-DEFAULT_IMAGE = "https://files.catbox.moe/l86j8b"
+DEFAULT_IMAGE = "https://telegra.ph/file/5c8b65dd0c2c63d55a406-789e86998c5e1cc434.jpg"
 
 # ───── Helpers ─────────────────────────────────────────
 
