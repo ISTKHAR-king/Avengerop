@@ -64,7 +64,7 @@ async def leaderboard_menu(client: Client, message: Message):
         [InlineKeyboardButton("⏹ 𝗖𝗹𝗼𝘀𝗲", callback_data="close_profile")]
     ])
     await message.reply_text(
-    "🎶 𝗪𝗲𝗹𝗰𝗼𝗺𝗲 𝘁𝗼 𝘁𝗵𝗲 𝗠𝘂𝘀𝗶𝗰 𝗟𝗲𝗮𝗱𝗲𝗿𝗯𝗼𝗮𝗿𝗱! 📊\n\n"
+    "🎶 𝗪𝗲𝗹𝗰𝗼𝗺𝗲 𝘁𝗼 {app.mention}\n\n"
     "Discover the top-performing groups and users based on their song plays!\n\n"
     "Select a category below to view:\n"
     "• 🔥 𝗧𝗼𝗽 𝗚𝗿𝗼𝘂𝗽𝘀 𝗢𝘃𝗲𝗿𝗮𝗹𝗹\n"
@@ -260,7 +260,7 @@ async def back_to_leaderboard(client: Client, cq: CallbackQuery):
         [InlineKeyboardButton("⏹ 𝗖𝗹𝗼𝘀𝗲", callback_data="close_profile")]
     ])
     await cq.message.edit_text(
-    "🎶 𝗪𝗲𝗹𝗰𝗼𝗺𝗲 𝘁𝗼 𝘁𝗵𝗲 𝗠𝘂𝘀𝗶𝗰 𝗟𝗲𝗮𝗱𝗲𝗿𝗯𝗼𝗮𝗿𝗱! 📊\n\n"
+    "🎶 𝗪𝗲𝗹𝗰𝗼𝗺𝗲 𝘁𝗼 {app.mention}! 📊\n\n"
     "Discover the top-performing groups and users based on their song plays!\n\n"
     "Select a category below to view:\n"
     "• 🔥 𝗧𝗼𝗽 𝗚𝗿𝗼𝘂𝗽𝘀 𝗢𝘃𝗲𝗿𝗮𝗹𝗹\n"
