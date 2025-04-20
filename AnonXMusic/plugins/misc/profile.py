@@ -1,3 +1,4 @@
+from pyrogram.types import UserProfilePhotos
 from pyrogram import Client, filters
 from pyrogram.types import (
     Message, 
@@ -75,13 +76,14 @@ async def leaderboard_menu(client: Client, message: Message):
     reply_markup=kb
 )
 
+
 @app.on_message(filters.command("profile") & filters.group)
 async def user_profile(client: Client, message: Message):
     uid = message.from_user.id
     count, rank = await get_user_profile(uid)
 
     try:
-        photos = await client.get_profile_photos(uid, limit=1)
+        photos = await client.get_profile_photos(uid)
         if photos.total_count > 0:
             photo = photos.photos[0].file_id
         else:
