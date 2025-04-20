@@ -14,8 +14,9 @@ import random
 # Default placeholder image
 DEFAULT_IMAGES = [
     "https://graph.org/file/f20072ed0125e05c4a179-749b57b82ab375adfb.jpg",
-    "https://graph.org/file/4b17ae416c6501cb8f4b6-3f5f9d6f4edb90e14a.jpg",
-    "https://graph.org/file/742d864c80feee4fa8476-a32e01adeea7b7df18.jpg"
+    "https://graph.org/file/742d864c80feee4fa8476-a32e01adeea7b7df18.jpg",
+    "https://graph.org/file/5146d19a7e8f4a4bf135e-2c1a0899cc2de6efd4.jpg",
+    "https://graph.org/file/4b17ae416c6501cb8f4b6-3f5f9d6f4edb90e14a.jpg"
 ]
 
 # ───── Helpers ─────────────────────────────────────────
