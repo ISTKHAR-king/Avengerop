@@ -151,6 +151,7 @@ async def play_commnd(
                     streamtype="telegram",
                     forceplay=fplay,
                 )
+                await update_song_count(message.chat.id, message.from_user.id)
             except Exception as e:
                 ex_type = type(e).__name__
                 err = e if ex_type == "AssistantErr" else _["general_2"].format(ex_type)
@@ -284,6 +285,7 @@ async def play_commnd(
                     streamtype="soundcloud",
                     forceplay=fplay,
                 )
+                await update_song_count(message.chat.id, message.from_user.id)
             except Exception as e:
                 ex_type = type(e).__name__
                 err = e if ex_type == "AssistantErr" else _["general_2"].format(ex_type)
@@ -314,6 +316,7 @@ async def play_commnd(
                     streamtype="index",
                     forceplay=fplay,
                 )
+                await update_song_count(message.chat.id, message.from_user.id)
             except Exception as e:
                 ex_type = type(e).__name__
                 err = e if ex_type == "AssistantErr" else _["general_2"].format(ex_type)
@@ -371,6 +374,7 @@ async def play_commnd(
                 spotify=spotify,
                 forceplay=fplay,
             )
+            await update_song_count(message.chat.id, message.from_user.id)
         except Exception as e:
             ex_type = type(e).__name__
             err = e if ex_type == "AssistantErr" else _["general_2"].format(ex_type)
@@ -498,6 +502,7 @@ async def play_music(client, CallbackQuery, _):
             streamtype="youtube",
             forceplay=ffplay,
         )
+        await update_song_count(message.chat.id, message.from_user.id)
     except Exception as e:
         ex_type = type(e).__name__
         err = e if ex_type == "AssistantErr" else _["general_2"].format(ex_type)
@@ -596,6 +601,7 @@ async def play_playlists_command(client, CallbackQuery, _):
             spotify=spotify,
             forceplay=ffplay,
         )
+        await update_song_count(message.chat.id, message.from_user.id)
     except Exception as e:
         ex_type = type(e).__name__
         err = e if ex_type == "AssistantErr" else _["general_2"].format(ex_type)
