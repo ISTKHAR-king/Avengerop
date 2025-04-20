@@ -145,7 +145,7 @@ async def leaderboard_callback(client: Client, cq: CallbackQuery):
 async def show_overall_leaderboard(client: Client, cq: CallbackQuery):
     leaderboard = []
     total_songs = 0
-    async for record in song_stats_db.find({}):
+    async for record in song_stats_db.find({}):
         count = record.get("overall_count", 0)
         leaderboard.append((record["group_id"], count))
         total_songs += count
