@@ -58,25 +58,39 @@ async def leaderboard_menu(client: Client, message: Message):
     ])
     await message.reply_text("📈 Music Leaderboard — choose one:", reply_markup=kb)
 
+from pyrogram import Client, filters
+from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, Message
+
+DEFAULT_IMAGE = "https://telegra.ph/file/xxx.jpg"  # Your default image URL or file_id
+
 @app.on_message(filters.command("profile") & filters.group)
 async def user_profile(client: Client, message: Message):
     uid = message.from_user.id
     count, rank = await get_user_profile(uid)
-    
-    # Ensure the correct method is called for getting user profile photos
+
     try:
         photos = await client.get_user_profile_photos(uid)
-        photo = photos[0].file_id if photos.total_count else DEFAULT_IMAGE
-    except AttributeError:
-        # In case the method doesn't exist, set a default photo
+        if photos.total_count > 0:
+            photo = photos.photos[0][0].file_id  # Get the smallest size photo from the first set
+        else:
+            photo = DEFAULT_IMAGE
+    except Exception as e:
+        print(e)
         photo = DEFAULT_IMAGE
 
+    uname = message.from_user.username or "N/A"
+
     if count == 0:
-        text = "Your Profile\n\nYou haven't played any songs yet."
-    else:
-        uname = message.from_user.username or "N/A"
         text = (
-            "Musical Info 📢\n\n"
+            f"𝗠𝘂𝘀𝗶𝗰𝗮𝗹 𝗜𝗻𝗳𝗼 📢\n\n"
+            f"📝 Name: {message.from_user.first_name}\n"
+            f"✨ Username: @{uname}\n"
+            f"🆔 ID: {uid}\n\n"
+            "**You haven't played any songs yet.**"
+        )
+    else:
+        text = (
+            f"𝗠𝘂𝘀𝗶𝗰𝗮𝗹 𝗜𝗻𝗳𝗼 📢\n\n"
             f"📝 Name: {message.from_user.first_name}\n"
             f"✨ Username: @{uname}\n"
             f"🆔 ID: {uid}\n"
@@ -84,8 +98,12 @@ async def user_profile(client: Client, message: Message):
             f"♨️ Rank: #{rank}"
         )
 
-    kb = InlineKeyboardMarkup([[InlineKeyboardButton("⏹ Close", callback_data="close_profile")]])
+    kb = InlineKeyboardMarkup(
+        [[InlineKeyboardButton("⏹ Close", callback_data="close_profile")]]
+    )
+
     await message.reply_photo(photo, caption=text, reply_markup=kb)
+
 
 @app.on_callback_query(filters.regex("^close_profile$"))
 async def close_profile(client: Client, cq: CallbackQuery):
@@ -162,7 +180,7 @@ async def show_weekly_leaderboard(client: Client, cq: CallbackQuery):
     if not leaderboard or leaderboard[0][1] == 0:
         return await cq.message.edit_text("No songs played this week!")
 
-    text = "📊 Top 10 Groups (This Week’s Songs Played) 📊\n\n"
+    text = "📊 𝗧𝗼𝗽 𝟭𝟬 𝗚𝗿𝗼𝘂𝗽𝘀 (𝗧𝗵𝗶𝘀 𝗪𝗲𝗲𝗸’𝘀 𝗦𝗼𝗻𝗴𝘀 𝗣𝗹𝗮𝘆𝗲𝗱) 📊\n\n"
     for i, (group_id, count) in enumerate(leaderboard, 1):
         try:
             chat = await client.get_chat(group_id)
@@ -197,11 +215,11 @@ async def show_top_users(client: Client, cq: CallbackQuery):
 @app.on_callback_query(filters.regex("^back_leaderboard$"))
 async def back_to_leaderboard(client: Client, cq: CallbackQuery):
     kb = InlineKeyboardMarkup([
-        [InlineKeyboardButton("🎶 Overall Top Groups", callback_data="overall_songs")],
-        [InlineKeyboardButton("📅 Today Top Groups", callback_data="today_songs")],
-        [InlineKeyboardButton("📊 Weekly Top Groups", callback_data="weekly_songs")],
-        [InlineKeyboardButton("🏆 Overall Top Users", callback_data="top_users")], 
-        [InlineKeyboardButton("⏹ Close", callback_data="close_profile")]
+        [InlineKeyboardButton("🎶 ᴏᴠᴇʀᴀʟʟ ᴛᴏᴘ ɢʀᴏᴜᴘs", callback_data="overall_songs")],
+        [InlineKeyboardButton("📅 ᴛᴏᴅᴀʏ ᴛᴏᴘ ɢʀᴏᴜᴘs", callback_data="today_songs")],
+        [InlineKeyboardButton("📊 ᴡᴇᴇᴋʟʏ ᴛᴏᴘ ɢʀᴏᴜᴘs", callback_data="weekly_songs")],
+        [InlineKeyboardButton("🏆 ᴏᴠᴇʀᴀʟʟ ᴛᴏᴘ ᴜsᴇʀs", callback_data="top_users")], 
+        [InlineKeyboardButton("⏹ ᴄʟᴏsᴇ", callback_data="close_profile")]
     ])
-    await cq.message.edit_text("📈 Music Leaderboard — choose one:", reply_markup=kb)
+    await cq.message.edit_text("📈 𝐌𝐮𝐬𝐢𝐜 𝐋𝐞𝐚𝐝𝐞𝐫𝐛𝐨𝐚𝐫𝐝𝐬 — choose one:", reply_markup=kb)
 
