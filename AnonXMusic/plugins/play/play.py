@@ -24,7 +24,6 @@ from AnonXMusic.utils.logger import play_logs
 from AnonXMusic.utils.stream.stream import stream
 from config import BANNED_USERS, lyrical
 
-
 @app.on_message(
     filters.command(
         [
@@ -104,6 +103,10 @@ async def play_commnd(
                     streamtype="telegram",
                     forceplay=fplay,
                 )
+                
+                # Update song count after successful stream
+                await update_song_count(message.chat.id, user_id)
+
             except Exception as e:
                 ex_type = type(e).__name__
                 err = e if ex_type == "AssistantErr" else _["general_2"].format(ex_type)
