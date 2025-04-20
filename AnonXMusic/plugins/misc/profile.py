@@ -138,13 +138,13 @@ async def show_today_leaderboard(client: Client, cq: CallbackQuery):
     if not leaderboard or leaderboard[0][1] == 0:
         return await cq.message.edit_text("No songs played today!")
 
-    text = "📅 **Top 10 Groups (Today’s Songs Played)** 📅\n\n"
+    text = "📅 𝗧𝗼𝗽 𝟭𝟬 𝗚𝗿𝗼𝘂𝗽𝘀 (𝗧𝗼𝗱𝗮𝘆’𝘀 𝗦𝗼𝗻𝗴𝘀 𝗣𝗹𝗮𝘆𝗲𝗱) 📅\n\n"
     for i, (group_id, count) in enumerate(leaderboard, 1):
         try:
             chat = await client.get_chat(group_id)
-            text += f"**{i}. {chat.title}** — {count} songs\n"
+            text += f"{i}. {chat.title} — {count} songs\n"
         except:
-            text += f"**{i}. [Group ID: {group_id}]** — {count} songs\n"
+            text += f"{i}. [Group ID: {group_id}] — {count} songs\n"
 
     kb = InlineKeyboardMarkup([[InlineKeyboardButton("🔙 Back", callback_data="back_leaderboard")]])
     await cq.message.edit_text(text, reply_markup=kb)
@@ -162,13 +162,13 @@ async def show_weekly_leaderboard(client: Client, cq: CallbackQuery):
     if not leaderboard or leaderboard[0][1] == 0:
         return await cq.message.edit_text("No songs played this week!")
 
-    text = "📊 **Top 10 Groups (This Week’s Songs Played)** 📊\n\n"
+    text = "📊 Top 10 Groups (This Week’s Songs Played) 📊\n\n"
     for i, (group_id, count) in enumerate(leaderboard, 1):
         try:
             chat = await client.get_chat(group_id)
-            text += f"**{i}. {chat.title}** — {count} songs\n"
+            text += f"{i}. {chat.title} — {count} songs\n"
         except:
-            text += f"**{i}. [Group ID: {group_id}]** — {count} songs\n"
+            text += f"{i}. [Group ID: {group_id}] — {count} songs\n"
 
     kb = InlineKeyboardMarkup([[InlineKeyboardButton("🔙 Back", callback_data="back_leaderboard")]])
     await cq.message.edit_text(text, reply_markup=kb)
@@ -183,13 +183,13 @@ async def show_top_users(client: Client, cq: CallbackQuery):
     if not leaderboard:
         return await cq.message.edit_text("No user data found!")
 
-    text = "🏆 **Top 10 Users (Overall Songs Played)** 🏆\n\n"
+    text = "🏆 𝗧𝗼𝗽 𝟭𝟬 𝗨𝘀𝗲𝗿𝘀 (𝗢𝘃𝗲𝗿𝗮𝗹𝗹 𝗦𝗼𝗻𝗴𝘀 𝗣𝗹𝗮𝘆𝗲𝗱) 🏆\n\n"
     for i, (user_id, count) in enumerate(leaderboard, 1):
         try:
             user = await client.get_users(int(user_id))
-            text += f"**{i}.** [{user.first_name}](tg://user?id={user.id}) — {count} songs\n"
+            text += f"{i}. [{user.first_name}](tg://user?id={user.id}) — {count} songs\n"
         except:
-            text += f"**{i}. [User ID: {user_id}]** — {count} songs\n"
+            text += f"{i}. [User ID: {user_id}] — {count} songs\n"
 
     kb = InlineKeyboardMarkup([[InlineKeyboardButton("🔙 Back", callback_data="back_leaderboard")]])
     await cq.message.edit_text(text, reply_markup=kb, disable_web_page_preview=True)
@@ -204,9 +204,3 @@ async def back_to_leaderboard(client: Client, cq: CallbackQuery):
     ])
     await cq.message.edit_text("📈 Music Leaderboard — choose one:", reply_markup=kb)
 
-
-@app.on_message(filters.group & filters.text)
-async def track_play(client: Client, message: Message):
-    text = message.text or ""
-    if text.startswith(("/play", "/vplay")) and message.from_user:
-        await update_song_count(message.chat.id, message.from_user.id)
