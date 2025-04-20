@@ -66,12 +66,7 @@ async def leaderboard_menu(client: Client, message: Message):
     await message.reply_text(
     "🎶 𝗪𝗲𝗹𝗰𝗼𝗺𝗲 𝘁𝗼 {app.mention}\n\n"
     "Discover the top-performing groups and users based on their song plays!\n\n"
-    "Select a category below to view:\n"
-    "• 🔥 𝗧𝗼𝗽 𝗚𝗿𝗼𝘂𝗽𝘀 𝗢𝘃𝗲𝗿𝗮𝗹𝗹\n"
-    "• 📅 𝗧𝗼𝗽 𝗚𝗿𝗼𝘂𝗽𝘀 𝗧𝗼𝗱𝗮𝘆\n"
-    "• 📊 𝗧𝗼𝗽 𝗚𝗿𝗼𝘂𝗽𝘀 𝗧𝗵𝗶𝘀 𝗪𝗲𝗲𝗸\n"
-    "• 🏆 𝗧𝗼𝗽 𝗠𝘂𝘀𝗶𝗰 𝗟𝗼𝘃𝗲𝗿𝘀\n\n"
-    "Let’s see who’s leading the charts!",
+    "Select a category below to view:", 
     reply_markup=kb
 )
 
@@ -188,8 +183,8 @@ async def show_today_leaderboard(client: Client, cq: CallbackQuery):
         except:
             text += f"{i}. 👥 Unknown[{group_id}] — {count} songs\n"
 
-    text += f"\n🎵 𝗧𝗼𝘁𝗮𝗹 𝗣𝗹𝗮𝘆𝗲𝗱 𝗦𝗼𝗻𝗴𝘀: {total_songs}"
-    text += f"\n♨️ 𝗣𝗼𝘄𝗲𝗿𝗲𝗱 𝗯𝘆 :  {app.mention}"
+    text += f"\nTotal Played Songs: {total_songs}"
+    text += f"\nPowered By : {app.mention}"
 
     kb = InlineKeyboardMarkup([[InlineKeyboardButton("🔙 Back", callback_data="back_leaderboard")]])
     await cq.message.edit_text(text, reply_markup=kb)
@@ -218,7 +213,7 @@ async def show_weekly_leaderboard(client: Client, cq: CallbackQuery):
             text += f"{i}. 👥 Unknown[{group_id}] — {count} songs\n"
 
     text += f"\n🎵 𝗧𝗼𝘁𝗮𝗹 𝗣𝗹𝗮𝘆𝗲𝗱 𝗦𝗼𝗻𝗴𝘀: {total_songs}"
-    text += f"\n♨️ 𝗣𝗼𝘄𝗲𝗿𝗲𝗱 𝗯𝘆 :  {app.mention}"
+    text += f"\n♨️ Powered By : {app.mention}"
 
     kb = InlineKeyboardMarkup([[InlineKeyboardButton("🔙 Back", callback_data="back_leaderboard")]])
     await cq.message.edit_text(text, reply_markup=kb)
@@ -245,7 +240,7 @@ async def show_top_users(client: Client, cq: CallbackQuery):
             text += f"{i}. 👤 Unknown[{user_id}] — {count} songs\n"
 
     text += f"\n🎵 𝗧𝗼𝘁𝗮𝗹 𝗣𝗹𝗮𝘆𝗲𝗱 𝗦𝗼𝗻𝗴𝘀: {total_songs}"
-    text += f"\n♨️ 𝗣𝗼𝘄𝗲𝗿𝗲𝗱 𝗯𝘆 :  {app.mention}"
+    text += f"\n♨️ Powered By : {app.mention}"
 
     kb = InlineKeyboardMarkup([[InlineKeyboardButton("🔙 Back", callback_data="back_leaderboard")]])
     await cq.message.edit_text(text, reply_markup=kb)
@@ -262,12 +257,7 @@ async def back_to_leaderboard(client: Client, cq: CallbackQuery):
     await cq.message.edit_text(
     "🎶 𝗪𝗲𝗹𝗰𝗼𝗺𝗲 𝘁𝗼 {app.mention}! 📊\n\n"
     "Discover the top-performing groups and users based on their song plays!\n\n"
-    "Select a category below to view:\n"
-    "• 🔥 𝗧𝗼𝗽 𝗚𝗿𝗼𝘂𝗽𝘀 𝗢𝘃𝗲𝗿𝗮𝗹𝗹\n"
-    "• 📅 𝗧𝗼𝗽 𝗚𝗿𝗼𝘂𝗽𝘀 𝗧𝗼𝗱𝗮𝘆\n"
-    "• 📊 𝗧𝗼𝗽 𝗚𝗿𝗼𝘂𝗽𝘀 𝗧𝗵𝗶𝘀 𝗪𝗲𝗲𝗸\n"
-    "• 🏆 𝗧𝗼𝗽 𝗠𝘂𝘀𝗶𝗰 𝗟𝗼𝘃𝗲𝗿𝘀\n\n"
-    "Let’s see who’s leading the charts!",
+    "Select a category below to view:",
     reply_markup=kb
 )
 
