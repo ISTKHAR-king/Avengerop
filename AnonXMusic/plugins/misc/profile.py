@@ -61,7 +61,7 @@ async def leaderboard_menu(client: Client, message: Message):
         [InlineKeyboardButton("🏆 ᴏᴠᴇʀᴀʟʟ ᴛᴏᴘ ᴜsᴇʀs", callback_data="top_users")], 
         [InlineKeyboardButton("⏹ ᴄʟᴏsᴇ", callback_data="close_profile")]
     ])
-    await message.reply_text("📈 Music Leaderboard — choose one:", reply_markup=kb)
+    await message.reply_text("📈 𝗠𝘂𝘀𝗶𝗰 𝗟𝗲𝗮𝗱𝗲𝗿𝗯𝗼𝗮𝗿𝗱 — choose one:", reply_markup=kb)
 
 
 @app.on_message(filters.command("profile") & filters.group)
@@ -144,11 +144,11 @@ async def show_overall_leaderboard(client: Client, cq: CallbackQuery):
     for i, (group_id, count) in enumerate(leaderboard, 1):
         try:
             chat = await client.get_chat(group_id)
-            text += f"{i}. {chat.title} — {count} songs\n"
+            text += f"{i}. 👥 {chat.title} — {count} songs\n"
         except:
-            text += f"{i}. [Group ID: {group_id}] — {count} songs\n"
+            text += f"{i}. 👥 Unknown[{group_id}] — {count} songs\n"
 
-    text += f"\n🎵 𝗧𝗼𝘁𝗮𝗹 𝗣𝗹𝗮𝘆𝗲𝗱 𝗦𝗼𝗻𝗴𝘀: `{total_songs}`"
+    text += f"\n🎵 𝗧𝗼𝘁𝗮𝗹 𝗣𝗹𝗮𝘆𝗲𝗱 𝗦𝗼𝗻𝗴𝘀: {total_songs}"
 
     kb = InlineKeyboardMarkup([[InlineKeyboardButton("🔙 Back", callback_data="back_leaderboard")]])
     await cq.message.edit_text(text, reply_markup=kb)
@@ -170,9 +170,9 @@ async def show_today_leaderboard(client: Client, cq: CallbackQuery):
     for i, (group_id, count) in enumerate(leaderboard, 1):
         try:
             chat = await client.get_chat(group_id)
-            text += f"{i}. {chat.title} — {count} songs\n"
+            text += f"{i}. 👥 {chat.title} — {count} songs\n"
         except:
-            text += f"{i}. [Group ID: {group_id}] — {count} songs\n"
+            text += f"{i}. 👥 Unknown[{group_id}] — {count} songs\n"
 
     text += f"\n🎵 𝗧𝗼𝘁𝗮𝗹 𝗣𝗹𝗮𝘆𝗲𝗱 𝗦𝗼𝗻𝗴𝘀: {total_songs}"
 
@@ -198,9 +198,9 @@ async def show_weekly_leaderboard(client: Client, cq: CallbackQuery):
     for i, (group_id, count) in enumerate(leaderboard, 1):
         try:
             chat = await client.get_chat(group_id)
-            text += f"{i}. {chat.title} — {count} songs\n"
+            text += f"{i}. 👥 {chat.title} — {count} songs\n"
         except:
-            text += f"{i}. [Group ID: {group_id}] — {count} songs\n"
+            text += f"{i}. 👥 Unknown[{group_id}] — {count} songs\n"
 
     text += f"\n🎵 𝗧𝗼𝘁𝗮𝗹 𝗣𝗹𝗮𝘆𝗲𝗱 𝗦𝗼𝗻𝗴𝘀: {total_songs}"
 
@@ -224,9 +224,9 @@ async def show_top_users(client: Client, cq: CallbackQuery):
     for i, (user_id, count) in enumerate(leaderboard, 1):
         try:
             user = await client.get_users(int(user_id))
-            text += f"{i}. {user.first_name} [{user.id}] — {count} songs\n"
+            text += f"{i}. 👤 {user.first_name} [{user.id}] — {count} songs\n"
         except:
-            text += f"{i}. [{user_id}] — {count} songs\n"
+            text += f"{i}. 👤 Unknown[{user_id}] — {count} songs\n"
 
     text += f"\n🎵 𝗧𝗼𝘁𝗮𝗹 𝗣𝗹𝗮𝘆𝗲𝗱 𝗦𝗼𝗻𝗴𝘀: {total_songs}"
 
