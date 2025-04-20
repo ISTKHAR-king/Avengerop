@@ -58,47 +58,58 @@ async def leaderboard_menu(client: Client, message: Message):
     ])
     await message.reply_text("📈 Music Leaderboard — choose one:", reply_markup=kb)
 
+import random
+
+DEFAULT_IMAGES = [
+    "https://telegra.ph/file/xxxx1.jpg",
+    "https://telegra.ph/file/xxxx2.jpg",
+    "https://telegra.ph/file/xxxx3.jpg"
+]
+
 @app.on_message(filters.command("profile") & filters.group)
 async def user_profile(client: Client, message: Message):
-    uid = message.from_user.id
-    count, rank = await get_user_profile(uid)
+    uid = message.from_user.id
+    count, rank = await get_user_profile(uid)
 
-    try:
-        photos = await client.get_user_profile_photos(uid)
-        if photos.total_count > 0:
-            photo = photos.photos[0][0].file_id  # Get the smallest size photo from the first set
-        else:
-            photo = DEFAULT_IMAGE
-    except Exception as e:
-        print(e)
-        photo = DEFAULT_IMAGE
+    try:
+        photos = await client.get_user_profile_photos(uid)
+        if photos.total_count > 0:
+            photo = photos.photos[0][0].file_id
+        else:
+            photo = random.choice(DEFAULT_IMAGES)
+    except Exception as e:
+        print(e)
+        photo = random.choice(DEFAULT_IMAGES)
 
-    uname = message.from_user.username or "N/A"
+    uname = message.from_user.username or "N/A"
+    name = message.from_user.first_name
 
-    if count == 0:
-        text = (
-            f"𝗠𝘂𝘀𝗶𝗰𝗮𝗹 𝗜𝗻𝗳𝗼 📢\n\n"
-            f"📝 Name: {message.from_user.first_name}\n"
-            f"✨ Username: @{uname}\n"
-            f"🆔 ID: {uid}\n\n"
-            "**You haven't played any songs yet.**"
-        )
-    else:
-        text = (
-            f"𝗠𝘂𝘀𝗶𝗰𝗮𝗹 𝗜𝗻𝗳𝗼 📢\n\n"
-            f"📝 Name: {message.from_user.first_name}\n"
-            f"✨ Username: @{uname}\n"
-            f"🆔 ID: {uid}\n"
-            f"🎶 Songs Played: {count}\n"
-            f"♨️ Rank: #{rank}"
-        )
+    if count == 0:
+        text = (
+            f"**🎶 𝗣𝗲𝗿𝘀𝗼𝗻𝗮𝗹 𝗠𝘂𝘀𝗶𝗰 𝗣𝗿𝗼𝗳𝗶𝗹𝗲 🎶**\n\n"
+            f"**👤 Name:** `{name}`\n"
+            f"**✨ Username:** `@{uname}`\n"
+            f"**🆔 User ID:** `{uid}`\n\n"
+            f"🎧 **Songs Played:** `0`\n"
+            f"📊 **Rank:** `Unranked`\n\n"
+            f"💡 *You haven't played any songs yet. Start vibing with the playlist!*"
+        )
+    else:
+        text = (
+            f"🎶 𝗣𝗲𝗿𝘀𝗼𝗻𝗮𝗹 𝗠𝘂𝘀𝗶𝗰 𝗣𝗿𝗼𝗳𝗶𝗹𝗲 🎶\n\n"
+            f"👤 𝗡𝗮𝗺𝗲: {name}\n"
+            f"✨ 𝗨𝘀𝗲𝗿𝗻𝗮𝗺𝗲: @{uname}\n"
+            f"🆔 𝗨𝘀𝗲𝗿 𝗜𝗗: {uid}\n\n"
+            f"🎧 𝗦𝗼𝗻𝗴𝘀 𝗣𝗹𝗮𝘆𝗲𝗱: {count}\n"
+            f"📊 𝗥𝗮𝗻𝗸: #{rank}\n\n"
+            f"🔥 𝗞𝗲𝗲𝗽 𝘁𝗵𝗲 𝗯𝗲𝗮𝘁𝘀 𝗮𝗹𝗶𝘃𝗲!"
+        )
 
-    kb = InlineKeyboardMarkup(
-        [[InlineKeyboardButton("⏹ Close", callback_data="close_profile")]]
-    )
+    kb = InlineKeyboardMarkup(
+        [[InlineKeyboardButton("⏹ 𝗖𝗹𝗼𝘀𝗲", callback_data="close_profile")]]
+    )
 
-    await message.reply_photo(photo, caption=text, reply_markup=kb)
-
+    await message.reply_photo(photo, caption=text, reply_markup=kb)
 
 @app.on_callback_query(filters.regex("^close_profile$"))
 async def close_profile(client: Client, cq: CallbackQuery):
