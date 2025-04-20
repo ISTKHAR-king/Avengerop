@@ -14,16 +14,20 @@ DEFAULT_IMAGE = "https://files.catbox.moe/l86j8b"
 # ───── Helpers ─────────────────────────────────────────
 
 async def update_song_count(group_id: int, user_id: int):
-    today = datetime.utcnow().strftime("%Y-%m-%d")
-    await song_stats_db.update_one(
-        {"group_id": group_id},
-        {"$inc": {
-            "overall_count": 1,
-            f"daily.{today}": 1,
-            f"users.{user_id}": 1
-        }},
-        upsert=True
-    )
+    try:
+        today = datetime.utcnow().strftime("%Y-%m-%d")
+        await song_stats_db.update_one(
+            {"group_id": group_id},
+            {"$inc": {
+                "overall_count": 1,
+                f"daily.{today}": 1,
+                f"users.{user_id}": 1
+            }},
+            upsert=True
+        )
+        print("Song count updated successfully!")
+    except Exception as e:
+        print(f"Error updating song count: {e}")
 
 async def get_user_profile(user_id: int):
     # build a simple map: {user_id_str: total_count}
@@ -49,9 +53,9 @@ async def track_play(client: Client, message: Message):
     if text.startswith(("/play", "/vplay")) and message.from_user:
         await update_song_count(message.chat.id, message.from_user.id)
 
-# 2) Leaderboard menu (unchanged)
 @app.on_message(filters.command("leaderboard") & filters.group)
 async def leaderboard_menu(client: Client, message: Message):
+    print("Leaderboard command received")  # Debugging line
     kb = InlineKeyboardMarkup([
         [InlineKeyboardButton("🎶 Overall Top Groups",   callback_data="overall_songs"),
          InlineKeyboardButton("📅 Today Top Groups",      callback_data="today_songs")],
