@@ -200,7 +200,8 @@ async def back_to_leaderboard(client: Client, cq: CallbackQuery):
         [InlineKeyboardButton("🎶 Overall Top Groups", callback_data="overall_songs")],
         [InlineKeyboardButton("📅 Today Top Groups", callback_data="today_songs")],
         [InlineKeyboardButton("📊 Weekly Top Groups", callback_data="weekly_songs")],
-        [InlineKeyboardButton("🏆 Overall Top Users", callback_data="top_users")]
+        [InlineKeyboardButton("🏆 Overall Top Users", callback_data="top_users")], 
+        [InlineKeyboardButton("⏹ Close", callback_data="close_profile")]
     ])
     await cq.message.edit_text("📈 Music Leaderboard — choose one:", reply_markup=kb)
 
