@@ -42,16 +42,14 @@ async def global_ban(client, message: Message, _):
     if user.id not in BANNED_USERS:
         BANNED_USERS.add(user.id)
 
-    served_chats = []
-    chats = await get_served_chats()
-    for chat in chats:
-        served_chats.append(int(chat["chat_id"]))
+    served_chats = await get_served_chats()  # Use the new function
+    served_chat_ids = [chat["_id"] for chat in served_chats]
 
-    time_expected = get_readable_time(len(served_chats))
+    time_expected = get_readable_time(len(served_chat_ids))
     mystic = await message.reply_text(
         f"🚫 Global Ban initiated!\n\n"
         f"⚠️ User: {user.mention} has been banned globally!\n\n"
-        f"🗂 Affected Chats: {len(served_chats)}\n"
+        f"🗂 Affected Chats: {len(served_chat_ids)}\n"
         f"⏳ Expected Time: {time_expected}\n\n"
         f"🔐 Banned by: {message.from_user.mention}\n"
         f"🔄 Progress: ⏳ 0% Banning...",
@@ -61,16 +59,16 @@ async def global_ban(client, message: Message, _):
     )
 
     number_of_chats = 0
-    for chat_id in served_chats:
+    for chat_id in served_chat_ids:
         try:
             await app.ban_chat_member(chat_id, user.id)
             number_of_chats += 1
             # Calculate the percentage
-            percentage = (number_of_chats / len(served_chats)) * 100
+            percentage = (number_of_chats / len(served_chat_ids)) * 100
             await mystic.edit_text(
                 f"🚫 Global Ban in Progress!\n\n"
                 f"⚠️ User: {user.mention} has been banned globally!\n\n"
-                f"🗂 Affected Chats: {len(served_chats)}\n"
+                f"🗂 Affected Chats: {len(served_chat_ids)}\n"
                 f"⏳ Expected Time: {time_expected}\n\n"
                 f"🔐 Banned by: {message.from_user.mention}\n"
                 f"🔄 Progress: ⏳ {int(percentage)}% Banning...",
@@ -80,7 +78,7 @@ async def global_ban(client, message: Message, _):
             )
         except FloodWait as fw:
             await asyncio.sleep(int(fw.value))
-        except:
+        except Exception as e:
             continue
 
     await add_banned_user(user.id)
@@ -96,6 +94,7 @@ async def global_ban(client, message: Message, _):
     )
     await mystic.delete()
 
+
 @app.on_message(filters.command(["ungban"]) & SUDOERS)
 @language
 async def global_un(client, message: Message, _):
@@ -104,7 +103,7 @@ async def global_un(client, message: Message, _):
             return await message.reply_text(_["general_1"])
 
     user = await extract_user(message)
-    is_gbanned = await is_banned_user(user.id)
+    is_gbanned = await is_gbanned_user(user.id)
     if not is_gbanned:
         return await message.reply_text(_["gban_7"].format(user.mention))
 
@@ -114,7 +113,8 @@ async def global_un(client, message: Message, _):
     served_chats = []
     chats = await get_served_chats()
     for chat in chats:
-        served_chats.append(int(chat["chat_id"]))
+        # Convert chat ID to a regular integer
+        served_chats.append(int(chat["_id"]))  # _id should be the correct key for MongoDB
 
     time_expected = get_readable_time(len(served_chats))
     mystic = await message.reply_text(
@@ -152,7 +152,7 @@ async def global_un(client, message: Message, _):
         except:
             continue
 
-    await remove_banned_user(user.id)
+    await remove_gban_user(user.id)
 
     await message.reply_text(
         f"✅ **User**: {user.mention} has been unbanned from **{number_of_chats}** chats!\n"
@@ -162,6 +162,7 @@ async def global_un(client, message: Message, _):
         ])
     )
     await mystic.delete()
+
 
 
 @app.on_message(filters.command(["gbannedusers", "gbanlist"]) & SUDOERS)
