@@ -9,9 +9,14 @@ from datetime import datetime, timedelta
 from operator import itemgetter
 from AnonXMusic import app
 from AnonXMusic.utils.database import song_stats_db
+import random
 
 # Default placeholder image
-DEFAULT_IMAGE = "https://graph.org/file/f20072ed0125e05c4a179-749b57b82ab375adfb.jpg"
+DEFAULT_IMAGES = [
+    "https://graph.org/file/f20072ed0125e05c4a179-749b57b82ab375adfb.jpg",
+    "https://telegra.ph/file/xxxx2.jpg",
+    "https://telegra.ph/file/xxxx3.jpg"
+]
 
 # ───── Helpers ─────────────────────────────────────────
 
@@ -58,13 +63,6 @@ async def leaderboard_menu(client: Client, message: Message):
     ])
     await message.reply_text("📈 Music Leaderboard — choose one:", reply_markup=kb)
 
-import random
-
-DEFAULT_IMAGES = [
-    "https://telegra.ph/file/xxxx1.jpg",
-    "https://telegra.ph/file/xxxx2.jpg",
-    "https://telegra.ph/file/xxxx3.jpg"
-]
 
 @app.on_message(filters.command("profile") & filters.group)
 async def user_profile(client: Client, message: Message):
