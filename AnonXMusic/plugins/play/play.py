@@ -23,7 +23,8 @@ from AnonXMusic.utils.inline import (
 from AnonXMusic.utils.logger import play_logs
 from AnonXMusic.utils.stream.stream import stream
 from config import BANNED_USERS, lyrical
-from AnonXMusic.misc.profile import update_song_count
+from AnonXMusic.plugins.misc.profile import update_song_count
+
 @app.on_message(
     filters.command(
         [
