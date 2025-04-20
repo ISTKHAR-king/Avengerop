@@ -12,7 +12,7 @@ from AnonXMusic.utils.database import song_stats_db
 import random
 
 # Default placeholder image
-DEFAULT_IMAGE = [
+DEFAULT_IMAGES = [
     "https://graph.org/file/f20072ed0125e05c4a179-749b57b82ab375adfb.jpg",
     "https://graph.org/file/742d864c80feee4fa8476-a32e01adeea7b7df18.jpg",
     "https://graph.org/file/5146d19a7e8f4a4bf135e-2c1a0899cc2de6efd4.jpg",
@@ -57,11 +57,11 @@ async def get_user_profile(user_id: int):
 async def leaderboard_menu(client: Client, message: Message):
     print("Leaderboard command received")
     kb = InlineKeyboardMarkup([
-        [InlineKeyboardButton("🎶 ᴏᴠᴇʀᴀʟʟ ᴛᴏᴘ ɢʀᴏᴜᴘs", callback_data="overall_songs")],
-        [InlineKeyboardButton("📅 ᴛᴏᴅᴀʏ ᴛᴏᴘ ɢʀᴏᴜᴘs", callback_data="today_songs")],
-        [InlineKeyboardButton("📊 ᴡᴇᴇᴋʟʏ ᴛᴏᴘ ɢʀᴏᴜᴘs", callback_data="weekly_songs")],
-        [InlineKeyboardButton("🏆 ᴏᴠᴇʀᴀʟʟ ᴛᴏᴘ ᴜsᴇʀs", callback_data="top_users")], 
-        [InlineKeyboardButton("⏹ ᴄʟᴏsᴇ", callback_data="close_profile")]
+        [InlineKeyboardButton("🔥 𝗧𝗼𝗽 𝗚𝗿𝗼𝘂𝗽𝘀 𝗢𝘃𝗲𝗿𝗮𝗹𝗹", callback_data="overall_songs")],
+        [InlineKeyboardButton("📅 𝗧𝗼𝗽 𝗚𝗿𝗼𝘂𝗽𝘀 𝗧𝗼𝗱𝗮𝘆", callback_data="today_songs")],
+        [InlineKeyboardButton("📊 𝗧𝗼𝗽 𝗚𝗿𝗼𝘂𝗽𝘀 𝗧𝗵𝗶𝘀 𝗪𝗲𝗲𝗸", callback_data="weekly_songs")],
+        [InlineKeyboardButton("🏆 𝗧𝗼𝗽 𝗠𝘂𝘀𝗶𝗰 𝗟𝗼𝘃𝗲𝗿𝘀", callback_data="top_users")], 
+        [InlineKeyboardButton("⏹ 𝗖𝗹𝗼𝘀𝗲", callback_data="close_profile")]
     ])
     await message.reply_text(
     "🎶 𝗪𝗲𝗹𝗰𝗼𝗺𝗲 𝘁𝗼 𝘁𝗵𝗲 𝗠𝘂𝘀𝗶𝗰 𝗟𝗲𝗮𝗱𝗲𝗿𝗯𝗼𝗮𝗿𝗱! 📊\n\n"
@@ -75,52 +75,51 @@ async def leaderboard_menu(client: Client, message: Message):
     reply_markup=kb
 )
 
-
 @app.on_message(filters.command("profile") & filters.group)
 async def user_profile(client: Client, message: Message):
-    uid = message.from_user.id
-    count, rank = await get_user_profile(uid)
+    uid = message.from_user.id
+    count, rank = await get_user_profile(uid)
 
-    try:
-        photos = await client.get_user_profile_photos(uid)
-        if photos.total_count > 0:
-            photo = photos.photos[0][0].file_id
-        else:
-            photo = random.choice(DEFAULT_IMAGE)
-    except Exception as e:
-        print(e)
-        photo = random.choice(DEFAULT_IMAGE)
+    try:
+        photos = await client.get_profile_photos(uid, limit=1)
+        if photos.total_count > 0:
+            photo = photos.photos[0].file_id
+        else:
+            photo = random.choice(DEFAULT_IMAGES)
+    except Exception as e:
+        print(e)
+        photo = random.choice(DEFAULT_IMAGES)
 
-    uname = message.from_user.username or "N/A"
-    name = message.from_user.first_name
+    uname = message.from_user.username or "N/A"
+    name = message.from_user.first_name
 
-    if count == 0:
-        text = (
-            f"🎶 𝗣𝗲𝗿𝘀𝗼𝗻𝗮𝗹 𝗠𝘂𝘀𝗶𝗰 𝗣𝗿𝗼𝗳𝗶𝗹𝗲 🎶\n\n"
-            f"👤 𝗡𝗮𝗺𝗲: {name}\n"
-            f"✨ 𝗨𝘀𝗲𝗿𝗻𝗮𝗺𝗲: @{uname}\n"
-            f"🆔 𝗨𝘀𝗲𝗿 𝗜𝗗: {uid}\n\n"
-            f"🎧 𝗦𝗼𝗻𝗴𝘀 𝗣𝗹𝗮𝘆𝗲𝗱: 0\n"
-            f"📊 𝗥𝗮𝗻𝗸: Unranked\n\n"
-            f"💡 𝗬𝗼𝘂 𝗵𝗮𝘃𝗲𝗻'𝘁 𝗽𝗹𝗮𝘆𝗲𝗱 𝗮𝗻𝘆 𝘀𝗼𝗻𝗴𝘀 𝘆𝗲𝘁. 𝗦𝘁𝗮𝗿𝘁 𝘃𝗶𝗯𝗶𝗻𝗴 𝘄𝗶𝘁𝗵 𝘁𝗵𝗲 𝗽𝗹𝗮𝘆𝗹𝗶𝘀𝘁!\n"
+    if count == 0:
+        text = (
+            f"🎶 𝗣𝗲𝗿𝘀𝗼𝗻𝗮𝗹 𝗠𝘂𝘀𝗶𝗰 𝗣𝗿𝗼𝗳𝗶𝗹𝗲 🎶\n\n"
+            f"👤 𝗡𝗮𝗺𝗲: {name}\n"
+            f"✨ 𝗨𝘀𝗲𝗿𝗻𝗮𝗺𝗲: @{uname}\n"
+            f"🆔 𝗨𝘀𝗲𝗿 𝗜𝗗: {uid}\n\n"
+            f"🎧 𝗦𝗼𝗻𝗴𝘀 𝗣𝗹𝗮𝘆𝗲𝗱: 0\n"
+            f"📊 𝗥𝗮𝗻𝗸: Unranked\n\n"
+            f"💡 𝗬𝗼𝘂 𝗵𝗮𝘃𝗲𝗻'𝘁 𝗽𝗹𝗮𝘆𝗲𝗱 𝗮𝗻𝘆 𝘀𝗼𝗻𝗴𝘀 𝘆𝗲𝘁. 𝗦𝘁𝗮𝗿𝘁 𝘃𝗶𝗯𝗶𝗻𝗴 𝘄𝗶𝘁𝗵 𝘁𝗵𝗲 𝗽𝗹𝗮𝘆𝗹𝗶𝘀𝘁!\n"
             f"🔻 𝗣𝗼𝘄𝗲𝗿𝗲𝗱 𝗯𝘆: {app.mention}"
-        )
-    else:
-        text = (
-            f"🎶 𝗣𝗲𝗿𝘀𝗼𝗻𝗮𝗹 𝗠𝘂𝘀𝗶𝗰 𝗣𝗿𝗼𝗳𝗶𝗹𝗲 🎶\n\n"
-            f"👤 𝗡𝗮𝗺𝗲: {name}\n"
-            f"✨ 𝗨𝘀𝗲𝗿𝗻𝗮𝗺𝗲: @{uname}\n"
-            f"🆔 𝗨𝘀𝗲𝗿 𝗜𝗗: {uid}\n\n"
-            f"🎧 𝗦𝗼𝗻𝗴𝘀 𝗣𝗹𝗮𝘆𝗲𝗱: {count}\n"
-            f"📊 𝗥𝗮𝗻𝗸: #{rank}\n\n"
-            f"🔥 𝗞𝗲𝗲𝗽 𝘁𝗵𝗲 𝗯𝗲𝗮𝘁𝘀 𝗮𝗹𝗶𝘃𝗲!"
-        )
+        )
+    else:
+        text = (
+            f"🎶 𝗣𝗲𝗿𝘀𝗼𝗻𝗮𝗹 𝗠𝘂𝘀𝗶𝗰 𝗣𝗿𝗼𝗳𝗶𝗹𝗲 🎶\n\n"
+            f"👤 𝗡𝗮𝗺𝗲: {name}\n"
+            f"✨ 𝗨𝘀𝗲𝗿𝗻𝗮𝗺𝗲: @{uname}\n"
+            f"🆔 𝗨𝘀𝗲𝗿 𝗜𝗗: {uid}\n"
+            f"🎧 𝗦𝗼𝗻𝗴𝘀 𝗣𝗹𝗮𝘆𝗲𝗱: {count}\n"
+            f"📊 𝗥𝗮𝗻𝗸: #{rank}\n"
+            f"🔥 𝗞𝗲𝗲𝗽 𝘁𝗵𝗲 𝗯𝗲𝗮𝘁𝘀 𝗮𝗹𝗶𝘃𝗲!"
+        )
 
-    kb = InlineKeyboardMarkup(
-        [[InlineKeyboardButton("⏹ 𝗖𝗹𝗼𝘀𝗲", callback_data="close_profile")]]
-    )
+    kb = InlineKeyboardMarkup(
+        [[InlineKeyboardButton("⏹ 𝗖𝗹𝗼𝘀𝗲", callback_data="close_profile")]]
+    )
 
-    await message.reply_photo(photo, caption=text, reply_markup=kb)
+    await message.reply_photo(photo, caption=text, reply_markup=kb)
 
 @app.on_callback_query(filters.regex("^close_profile$"))
 async def close_profile(client: Client, cq: CallbackQuery):
