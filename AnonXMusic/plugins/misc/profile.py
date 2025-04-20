@@ -83,7 +83,7 @@ async def user_profile(client: Client, message: Message):
     count, rank = await get_user_profile(uid)
 
     try:
-        photos = await client.get_profile_photos(uid)
+        photos = await client.get_profile_photos(uid, limit=1)
         if photos.total_count > 0:
             photo = photos.photos[0][0].file_id
         else:
