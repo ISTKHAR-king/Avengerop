@@ -50,18 +50,13 @@ async def get_user_profile(user_id: int):
 async def leaderboard_menu(client: Client, message: Message):
     print("Leaderboard command received")
     kb = InlineKeyboardMarkup([
-        [InlineKeyboardButton("🎶 Overall Top Groups", callback_data="overall_songs")],
-        [InlineKeyboardButton("📅 Today Top Groups", callback_data="today_songs")],
-        [InlineKeyboardButton("📊 Weekly Top Groups", callback_data="weekly_songs")],
-        [InlineKeyboardButton("🏆 Overall Top Users", callback_data="top_users")], 
-        [InlineKeyboardButton("⏹ Close", callback_data="close_profile")]
+        [InlineKeyboardButton("🎶 ᴏᴠᴇʀᴀʟʟ ᴛᴏᴘ ɢʀᴏᴜᴘs", callback_data="overall_songs")],
+        [InlineKeyboardButton("📅 ᴛᴏᴅᴀʏ ᴛᴏᴘ ɢʀᴏᴜᴘs", callback_data="today_songs")],
+        [InlineKeyboardButton("📊 ᴡᴇᴇᴋʟʏ ᴛᴏᴘ ɢʀᴏᴜᴘs", callback_data="weekly_songs")],
+        [InlineKeyboardButton("🏆 ᴏᴠᴇʀᴀʟʟ ᴛᴏᴘ ᴜsᴇʀs", callback_data="top_users")], 
+        [InlineKeyboardButton("⏹ ᴄʟᴏsᴇ", callback_data="close_profile")]
     ])
     await message.reply_text("📈 Music Leaderboard — choose one:", reply_markup=kb)
-
-from pyrogram import Client, filters
-from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, Message
-
-DEFAULT_IMAGE = "https://telegra.ph/file/xxx.jpg"  # Your default image URL or file_id
 
 @app.on_message(filters.command("profile") & filters.group)
 async def user_profile(client: Client, message: Message):
