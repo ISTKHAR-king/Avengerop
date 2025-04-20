@@ -143,7 +143,7 @@ async def leaderboard_callback(client: Client, cq: CallbackQuery):
 # ───── Leaderboard Views ───────────────────────────────
 
 async def show_overall_leaderboard(client: Client, cq: CallbackQuery):
-    leaderboard = []
+    leaderboard = []
     total_songs = 0
     async for record in song_stats_db.find({}):
         count = record.get("overall_count", 0)
