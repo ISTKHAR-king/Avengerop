@@ -53,7 +53,8 @@ async def leaderboard_menu(client: Client, message: Message):
         [InlineKeyboardButton("🎶 Overall Top Groups", callback_data="overall_songs")],
         [InlineKeyboardButton("📅 Today Top Groups", callback_data="today_songs")],
         [InlineKeyboardButton("📊 Weekly Top Groups", callback_data="weekly_songs")],
-        [InlineKeyboardButton("🏆 Overall Top Users", callback_data="top_users")]
+        [InlineKeyboardButton("🏆 Overall Top Users", callback_data="top_users")], 
+        [InlineKeyboardButton("⏹ Close", callback_data="close_profile")]
     ])
     await message.reply_text("📈 Music Leaderboard — choose one:", reply_markup=kb)
 
@@ -145,7 +146,8 @@ async def show_today_leaderboard(client: Client, cq: CallbackQuery):
         except:
             text += f"**{i}. [Group ID: {group_id}]** — {count} songs\n"
 
-    await cq.message.edit_text(text)
+    kb = InlineKeyboardMarkup([[InlineKeyboardButton("🔙 Back", callback_data="back_leaderboard")]])
+    await cq.message.edit_text(text, reply_markup=kb)
 
 async def show_weekly_leaderboard(client: Client, cq: CallbackQuery):
     today = datetime.utcnow()
@@ -168,7 +170,8 @@ async def show_weekly_leaderboard(client: Client, cq: CallbackQuery):
         except:
             text += f"**{i}. [Group ID: {group_id}]** — {count} songs\n"
 
-    await cq.message.edit_text(text)
+    kb = InlineKeyboardMarkup([[InlineKeyboardButton("🔙 Back", callback_data="back_leaderboard")]])
+    await cq.message.edit_text(text, reply_markup=kb)
 
 async def show_top_users(client: Client, cq: CallbackQuery):
     user_counter = {}
@@ -188,7 +191,18 @@ async def show_top_users(client: Client, cq: CallbackQuery):
         except:
             text += f"**{i}. [User ID: {user_id}]** — {count} songs\n"
 
-    await cq.message.edit_text(text, disable_web_page_preview=True)
+    kb = InlineKeyboardMarkup([[InlineKeyboardButton("🔙 Back", callback_data="back_leaderboard")]])
+    await cq.message.edit_text(text, reply_markup=kb, disable_web_page_preview=True)
+
+@app.on_callback_query(filters.regex("^back_leaderboard$"))
+async def back_to_leaderboard(client: Client, cq: CallbackQuery):
+    kb = InlineKeyboardMarkup([
+        [InlineKeyboardButton("🎶 Overall Top Groups", callback_data="overall_songs")],
+        [InlineKeyboardButton("📅 Today Top Groups", callback_data="today_songs")],
+        [InlineKeyboardButton("📊 Weekly Top Groups", callback_data="weekly_songs")],
+        [InlineKeyboardButton("🏆 Overall Top Users", callback_data="top_users")]
+    ])
+    await cq.message.edit_text("📈 Music Leaderboard — choose one:", reply_markup=kb)
 
 
 @app.on_message(filters.group & filters.text)
