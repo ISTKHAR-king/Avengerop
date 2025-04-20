@@ -252,5 +252,15 @@ async def back_to_leaderboard(client: Client, cq: CallbackQuery):
         [InlineKeyboardButton("🏆 ᴏᴠᴇʀᴀʟʟ ᴛᴏᴘ ᴜsᴇʀs", callback_data="top_users")], 
         [InlineKeyboardButton("⏹ ᴄʟᴏsᴇ", callback_data="close_profile")]
     ])
-    await cq.message.edit_text("📈 𝐌𝐮𝐬𝐢𝐜 𝐋𝐞𝐚𝐝𝐞𝐫𝐛𝐨𝐚𝐫𝐝𝐬 — choose one:", reply_markup=kb)
+    await cq.message.edit_text(
+    "🎶 𝗪𝗲𝗹𝗰𝗼𝗺𝗲 𝘁𝗼 𝘁𝗵𝗲 𝗠𝘂𝘀𝗶𝗰 𝗟𝗲𝗮𝗱𝗲𝗿𝗯𝗼𝗮𝗿𝗱! 📊\n\n"
+    "Discover the top-performing groups and users based on their song plays!\n\n"
+    "Select a category below to view:\n"
+    "• 🔥 𝗧𝗼𝗽 𝗚𝗿𝗼𝘂𝗽𝘀 𝗢𝘃𝗲𝗿𝗮𝗹𝗹\n"
+    "• 📅 𝗧𝗼𝗽 𝗚𝗿𝗼𝘂𝗽𝘀 𝗧𝗼𝗱𝗮𝘆\n"
+    "• 📊 𝗧𝗼𝗽 𝗚𝗿𝗼𝘂𝗽𝘀 𝗧𝗵𝗶𝘀 𝗪𝗲𝗲𝗸\n"
+    "• 🏆 𝗧𝗼𝗽 𝗠𝘂𝘀𝗶𝗰 𝗟𝗼𝘃𝗲𝗿𝘀\n\n"
+    "Let’s see who’s leading the charts!",
+    reply_markup=kb
+)
 
