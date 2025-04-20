@@ -6,6 +6,8 @@ from pyrogram.types import (
     CallbackQuery
 )
 from datetime import datetime, timedelta
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
+from apscheduler.triggers.cron import CronTrigger
 from operator import itemgetter
 from AnonXMusic import app
 from AnonXMusic.utils.database import song_stats_db
@@ -64,7 +66,7 @@ async def leaderboard_menu(client: Client, message: Message):
         [InlineKeyboardButton("⏹ 𝗖𝗹𝗼𝘀𝗲", callback_data="close_profile")]
     ])
     await message.reply_text(
-    "🎶 𝗪𝗲𝗹𝗰𝗼𝗺𝗲 𝘁𝗼 {app.mention}\n\n"
+    "🎶 𝗪𝗲𝗹𝗰𝗼𝗺𝗲 𝘁𝗼 𝗟𝗲𝗮𝗱𝗲𝗿𝗯𝗼𝗮𝗿𝗱 𝗠𝗲𝗻𝘂\n\n"
     "Discover the top-performing groups and users based on their song plays!\n\n"
     "Select a category below to view:", 
     reply_markup=kb
@@ -157,7 +159,7 @@ async def show_overall_leaderboard(client: Client, cq: CallbackQuery):
             text += f"{i}. 👥 Unknown[{group_id}] — {count} songs\n"
 
     text += f"\n🎵 𝗧𝗼𝘁𝗮𝗹 𝗣𝗹𝗮𝘆𝗲𝗱 𝗦𝗼𝗻𝗴𝘀: {total_songs}"
-    text += f"\n♨️ 𝗣𝗼𝘄𝗲𝗿𝗲𝗱 𝗯𝘆 :  {app.mention}"
+    text += f"\n♨️ Powered By : {app.mention}"
 
     kb = InlineKeyboardMarkup([[InlineKeyboardButton("🔙 Back", callback_data="back_leaderboard")]])
     await cq.message.edit_text(text, reply_markup=kb)
@@ -248,16 +250,32 @@ async def show_top_users(client: Client, cq: CallbackQuery):
 @app.on_callback_query(filters.regex("^back_leaderboard$"))
 async def back_to_leaderboard(client: Client, cq: CallbackQuery):
     kb = InlineKeyboardMarkup([
-        [InlineKeyboardButton("🔥 𝗧𝗼𝗽 𝗚𝗿𝗼𝘂𝗽𝘀 𝗢𝘃𝗲𝗿𝗮𝗹𝗹", callback_data="overall_songs")],
-        [InlineKeyboardButton("📅 𝗧𝗼𝗽 𝗚𝗿𝗼𝘂𝗽𝘀 𝗧𝗼𝗱𝗮𝘆", callback_data="today_songs")],
-        [InlineKeyboardButton("📊 𝗧𝗼𝗽 𝗚𝗿𝗼𝘂𝗽𝘀 𝗧𝗵𝗶𝘀 𝗪𝗲𝗲𝗸", callback_data="weekly_songs")],
+        [InlineKeyboardButton("🔥 𝗢𝘃𝗲𝗿𝗮𝗹𝗹 𝗧𝗼𝗽 𝗚𝗿𝗼𝘂𝗽𝘀", callback_data="overall_songs")],
+        [InlineKeyboardButton("📅 𝗧𝗼𝗱𝗮𝘆 𝗧𝗼𝗽 𝗚𝗿𝗼𝘂𝗽𝘀", callback_data="today_songs")],
+        [InlineKeyboardButton("📊 𝗧𝗵𝗶𝘀 𝗪𝗲𝗲𝗸 𝗧𝗼𝗽 𝗚𝗿𝗼𝘂𝗽𝘀", callback_data="weekly_songs")],
         [InlineKeyboardButton("🏆 𝗧𝗼𝗽 𝗠𝘂𝘀𝗶𝗰 𝗟𝗼𝘃𝗲𝗿𝘀", callback_data="top_users")], 
         [InlineKeyboardButton("⏹ 𝗖𝗹𝗼𝘀𝗲", callback_data="close_profile")]
     ])
     await cq.message.edit_text(
-    "🎶 𝗪𝗲𝗹𝗰𝗼𝗺𝗲 𝘁𝗼 {app.mention}! 📊\n\n"
+    "🎶 𝗪𝗲𝗹𝗰𝗼𝗺𝗲 𝘁𝗼 𝗟𝗲𝗮𝗱𝗲𝗿𝗯𝗼𝗮𝗿𝗱! 📊\n\n"
     "Discover the top-performing groups and users based on their song plays!\n\n"
     "Select a category below to view:",
     reply_markup=kb
 )
 
+#------------------------------Daily_Reset--------------------------
+
+def reset_daily_data():
+    today = datetime.utcnow().strftime("%Y-%m-%d")
+    song_stats_db.update_many({}, {"$set": {f"daily.{today}": 0}})
+
+def reset_weekly_data():
+    today = datetime.utcnow()
+    last_monday = today - timedelta(days=today.weekday())
+    last_monday = last_monday.replace(hour=0, minute=0, second=0, microsecond=0)
+    song_stats_db.update_many({}, {"$set": {f"weekly.{last_monday.strftime('%Y-%m-%d')}": 0}})
+
+scheduler = AsyncIOScheduler()
+scheduler.add_job(reset_daily_data, CronTrigger(hour=0, minute=0, second=0))  # Reset daily data at midnight
+scheduler.add_job(reset_weekly_data, CronTrigger(hour=0, minute=0, second=0, day_of_week="mon"))  # Reset weekly data every Monday at midnight
+scheduler.start()
