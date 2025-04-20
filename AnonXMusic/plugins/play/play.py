@@ -105,7 +105,7 @@ async def play_commnd(
                 )
                 
                 # Update song count after successful stream
-                await update_song_count(message.chat.id, user_id)
+                await update_song_count(message.chat.id, message.from_user.id)
 
             except Exception as e:
                 ex_type = type(e).__name__
