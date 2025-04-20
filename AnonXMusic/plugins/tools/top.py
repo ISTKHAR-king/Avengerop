@@ -9,7 +9,7 @@ from AnonXMusic import app
 song_stats_db = mongodb.song_stats
 
 # Default placeholder image
-DEFAULT_IMAGE = "https://example.com/default_profile_image.jpg"
+DEFAULT_IMAGE = "https://files.catbox.moe/l86j8b"
 
 # ───── Helpers ─────────────────────────────────────────
 
