@@ -79,8 +79,8 @@ async def leaderboard_menu(client: Client, message: Message):
 
 @app.on_message(filters.command("profile") & filters.group)
 async def user_profile(client: Client, message: Message):
-    uid = message.from_user.id
-    count, rank = await get_user_profile(uid)
+    uid = message.from_user.id
+    count, rank = await get_user_profile(uid)
 
     try:
         photos = await client.get_user_profile_photos(uid)
