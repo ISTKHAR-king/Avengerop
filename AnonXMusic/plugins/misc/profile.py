@@ -1,4 +1,3 @@
-from pyrogram.types import UserProfilePhotos
 from pyrogram import Client, filters
 from pyrogram.types import (
     Message, 
