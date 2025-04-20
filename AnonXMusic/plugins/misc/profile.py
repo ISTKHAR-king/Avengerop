@@ -49,8 +49,9 @@ async def get_user_profile(user_id: int):
     sorted_users = sorted(user_counter.items(), key=itemgetter(1), reverse=True)
     count = user_counter.get(str(user_id), 0)
     rank = next((i+1 for i, (u, _) in enumerate(sorted_users) if u == str(user_id)), None)
+    print(f"User counter: {user_counter}")  # Move this up here
     return count, rank
-    print(f"User counter: {user_counter}")
+
 # ───── Handlers ────────────────────────────────────────
 
 @app.on_message(filters.command("leaderboard") & filters.group)
@@ -141,31 +142,32 @@ async def leaderboard_callback(client: Client, cq: CallbackQuery):
 
 # ───── Leaderboard Views ───────────────────────────────
 
-async def show_overall_leaderboard(client: Client, cq: CallbackQuery):
-    leaderboard = []
-    total_songs = 0
-    async for record in song_stats_db.find({}):
-        count = record.get("overall_count", 0)
-        leaderboard.append((record["group_id"], count))
-        total_songs += count
+async def show_today_leaderboard(client: Client, cq: CallbackQuery):
+    today = datetime.utcnow().strftime("%Y-%m-%d")
+    leaderboard = []
+    total_songs = 0
+    async for record in song_stats_db.find({}):
+        count = record.get("daily", {}).get(today, 0)
+        leaderboard.append((record["group_id"], count))
+        total_songs += count
 
-    leaderboard = sorted(leaderboard, key=itemgetter(1), reverse=True)[:10]
-    if not leaderboard:
-        return await cq.message.edit_text("No data found!")
+    leaderboard = sorted(leaderboard, key=itemgetter(1), reverse=True)[:10]
+    if not leaderboard:
+        return await cq.message.edit_text("No data found for today!")
 
-    text = "📈 𝗚𝗟𝗢𝗕𝗔𝗟 𝗧𝗢𝗣 𝗚𝗥𝗢𝗨𝗣𝗦 | 🌍\n\n"
-    for i, (group_id, count) in enumerate(leaderboard, 1):
-        try:
-            chat = await client.get_chat(group_id)
-            text += f"{i}. 👥 {chat.title} — {count} songs\n"
-        except:
-            text += f"{i}. 👥 Unknown[{group_id}] — {count} songs\n"
+    text = f"📅 𝗧𝗢𝗣 𝗚𝗥𝗢𝗨𝗣𝗦 𝗧𝗢𝗗𝗔𝗬 | {today}\n\n"
+    for i, (group_id, count) in enumerate(leaderboard, 1):
+        try:
+            chat = await client.get_chat(group_id)
+            text += f"{i}. 👥 {chat.title} — {count} songs\n"
+        except:
+            text += f"{i}. 👥 Unknown[{group_id}] — {count} songs\n"
 
-    text += f"\n🎵 𝗧𝗼𝘁𝗮𝗹 𝗣𝗹𝗮𝘆𝗲𝗱 𝗦𝗼𝗻𝗴𝘀: {total_songs}"
-    text += f"\n♨️ 𝗣𝗼𝘄𝗲𝗿𝗲𝗱 𝗯𝘆 :  {app.mention}"
+    text += f"\n🎶 𝗧𝗼𝘁𝗮𝗹 𝗣𝗹𝗮𝘆𝗲𝗱 𝗧𝗼𝗱𝗮𝘆: {total_songs}"
+    text += f"\n♨️ 𝗣𝗼𝘄𝗲𝗿𝗲𝗱 𝗯𝘆 : {app.mention}"
 
-    kb = InlineKeyboardMarkup([[InlineKeyboardButton("🔙 Back", callback_data="back_leaderboard")]])
-    await cq.message.edit_text(text, reply_markup=kb)
+    kb = InlineKeyboardMarkup([[InlineKeyboardButton("🔙 Back", callback_data="back_leaderboard")]])
+    await cq.message.edit_text(text, reply_markup=kb)
 
 async def show_today_leaderboard(client: Client, cq: CallbackQuery):
     today = datetime.utcnow().strftime("%Y-%m-%d")
