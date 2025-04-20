@@ -1,4 +1,4 @@
-import asyncio
+"""import asyncio
 
 from pyrogram import filters
 from pyrogram.errors import FloodWait
@@ -250,3 +250,4 @@ async def delete_gbanned_user_message(client, message: Message):
 
             # Optionally, send a notification to the group or log it
             await message.reply_text(f"⚠️ The message from the globally banned user {user.mention} was deleted.", quote=True)
+"""
