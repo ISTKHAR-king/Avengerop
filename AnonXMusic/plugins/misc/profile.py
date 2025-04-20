@@ -50,14 +50,10 @@ async def get_user_profile(user_id: int):
 async def leaderboard_menu(client: Client, message: Message):
     print("Leaderboard command received")
     kb = InlineKeyboardMarkup([
-        [
-            InlineKeyboardButton("🎶 Overall Top Groups", callback_data="overall_songs"),
-            InlineKeyboardButton("📅 Today Top Groups", callback_data="today_songs")
-        ],
-        [
-            InlineKeyboardButton("📊 Weekly Top Groups", callback_data="weekly_songs"),
-            InlineKeyboardButton("🏆 Overall Top Users", callback_data="top_users")
-        ]
+        [InlineKeyboardButton("🎶 Overall Top Groups", callback_data="overall_songs")],
+        [InlineKeyboardButton("📅 Today Top Groups", callback_data="today_songs")],
+        [InlineKeyboardButton("📊 Weekly Top Groups", callback_data="weekly_songs")],
+        [InlineKeyboardButton("🏆 Overall Top Users", callback_data="top_users")]
     ])
     await message.reply_text("📈 Music Leaderboard — choose one:", reply_markup=kb)
 
@@ -118,15 +114,17 @@ async def show_overall_leaderboard(client: Client, cq: CallbackQuery):
     if not leaderboard:
         return await cq.message.edit_text("No data found!")
 
-    text = "🏆 **Top 10 Groups (Overall Songs Played)** 🏆\n\n"
+    text = "🏆 𝗧𝗼𝗽 𝟭𝟬 𝗚𝗿𝗼𝘂𝗽𝘀 (𝗢𝘃𝗲𝗿𝗮𝗹𝗹 𝗦𝗼𝗻𝗴𝘀 𝗣𝗹𝗮𝘆𝗲𝗱) 🏆\n\n"
     for i, (group_id, count) in enumerate(leaderboard, 1):
         try:
             chat = await client.get_chat(group_id)
-            text += f"**{i}. {chat.title}** — {count} songs\n"
+            text += f"{i}. {chat.title} — {count} songs\n"
         except:
-            text += f"**{i}. [Group ID: {group_id}]** — {count} songs\n"
+            text += f"{i}. [Group ID: {group_id}] — {count} songs\n"
 
-    await cq.message.edit_text(text)
+    kb = InlineKeyboardMarkup([[InlineKeyboardButton("🔙 Back", callback_data="back_leaderboard")]])
+    await cq.message.edit_text(text, reply_markup=kb)
+
 
 async def show_today_leaderboard(client: Client, cq: CallbackQuery):
     today = datetime.utcnow().strftime("%Y-%m-%d")
