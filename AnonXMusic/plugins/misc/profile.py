@@ -187,9 +187,9 @@ async def show_top_users(client: Client, cq: CallbackQuery):
     for i, (user_id, count) in enumerate(leaderboard, 1):
         try:
             user = await client.get_users(int(user_id))
-            text += f"{i}. [{user.first_name}](tg://user?id={user.id}) — {count} songs\n"
+            text += f"{i}. {user.first_name} [{user.id}] — {count} songs\n"
         except:
-            text += f"{i}. [User ID: {user_id}] — {count} songs\n"
+            text += f"{i}. [{user_id}] — {count} songs\n"
 
     kb = InlineKeyboardMarkup([[InlineKeyboardButton("🔙 Back", callback_data="back_leaderboard")]])
     await cq.message.edit_text(text, reply_markup=kb, disable_web_page_preview=True)
