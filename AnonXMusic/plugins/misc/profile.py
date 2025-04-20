@@ -43,7 +43,7 @@ async def get_user_profile(user_id: int):
     count = user_counter.get(str(user_id), 0)
     rank = next((i+1 for i, (u, _) in enumerate(sorted_users) if u == str(user_id)), None)
     return count, rank
-
+    print(f"User counter: {user_counter}")
 # ───── Handlers ────────────────────────────────────────
 
 @app.on_message(filters.command("leaderboard") & filters.group)
@@ -97,6 +97,7 @@ async def close_profile(client: Client, cq: CallbackQuery):
 @app.on_callback_query(filters.regex("^(overall_songs|today_songs|weekly_songs|top_users)$"))
 async def leaderboard_callback(client: Client, cq: CallbackQuery):
     data = cq.data
+    print(f"Callback received: {data}")
     if data == "overall_songs":
         await show_overall_leaderboard(client, cq)
     elif data == "today_songs":
@@ -191,3 +192,9 @@ async def show_top_users(client: Client, cq: CallbackQuery):
 
     await cq.message.edit_text(text, disable_web_page_preview=True)
 
+
+@app.on_message(filters.group & filters.text)
+async def track_play(client: Client, message: Message):
+    text = message.text or ""
+    if text.startswith(("/play", "/vplay")) and message.from_user:
+        await update_song_count(message.chat.id, message.from_user.id)
