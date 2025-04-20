@@ -77,50 +77,63 @@ async def leaderboard_menu(client: Client, message: Message):
 
 
 @app.on_message(filters.command("profile") & filters.group)
-async def user_profile(client: Client, message: Message):
-    uid = message.from_user.id
-    count, rank = await get_user_profile(uid)
+async def user_profile(client: app, message: Message):
+    uid = message.from_user.id
 
-    try:
-        photos = await client.get_profile_photos(uid, limit=1)
-        if photos.total_count > 0:
-            photo = photos.photos[0][0].file_id
-        else:
-            photo = random.choice(DEFAULT_IMAGE)
-    except Exception as e:
-        print(e)
-        photo = random.choice(DEFAULT_IMAGE)
+    # Fetch music profile stats from your DB
+    count, rank = await get_user_profile(uid)
 
-    uname = message.from_user.username or "N/A"
-    name = message.from_user.first_name
+    # Fetch full user info
+    try:
+        user = await client.get_users(uid)
+        info_caption, photo_id = await user_info(client, user, already=True)
+    except Exception as e:
+        print(e)
+        return await message.reply_text("Failed to fetch profile info.")
 
-    if count == 0:
-        text = (
-            f"🎶 𝗣𝗲𝗿𝘀𝗼𝗻𝗮𝗹 𝗠𝘂𝘀𝗶𝗰 𝗣𝗿𝗼𝗳𝗶𝗹𝗲 🎶\n\n"
-            f"👤 𝗡𝗮𝗺𝗲: {name}\n"
-            f"✨ 𝗨𝘀𝗲𝗿𝗻𝗮𝗺𝗲: @{uname}\n"
-            f"🆔 𝗨𝘀𝗲𝗿 𝗜𝗗: {uid}\n"
-            f"🎧 𝗦𝗼𝗻𝗴𝘀 𝗣𝗹𝗮𝘆𝗲𝗱: 0\n"
-            f"📊 𝗥𝗮𝗻𝗸: Unranked\n"
-            f"💡 𝗬𝗼𝘂 𝗵𝗮𝘃𝗲𝗻'𝘁 𝗽𝗹𝗮𝘆𝗲𝗱 𝗮𝗻𝘆 𝘀𝗼𝗻𝗴𝘀 𝘆𝗲𝘁. 𝗦𝘁𝗮𝗿𝘁 𝘃𝗶𝗯𝗶𝗻𝗴 𝘄𝗶𝘁𝗵 𝘁𝗵𝗲 𝗽𝗹𝗮𝘆𝗹𝗶𝘀𝘁!\n"
-            f"🔻 𝗣𝗼𝘄𝗲𝗿𝗲𝗱 𝗯𝘆: {app.mention}"
-        )
-    else:
-        text = (
-            f"🎶 𝗣𝗲𝗿𝘀𝗼𝗻𝗮𝗹 𝗠𝘂𝘀𝗶𝗰 𝗣𝗿𝗼𝗳𝗶𝗹𝗲 🎶\n\n"
-            f"👤 𝗡𝗮𝗺𝗲: {name}\n"
-            f"✨ 𝗨𝘀𝗲𝗿𝗻𝗮𝗺𝗲: @{uname}\n"
-            f"🆔 𝗨𝘀𝗲𝗿 𝗜𝗗: {uid}\n"
-            f"🎧 𝗦𝗼𝗻𝗴𝘀 𝗣𝗹𝗮𝘆𝗲𝗱: {count}\n"
-            f"📊 𝗥𝗮𝗻𝗸: #{rank}\n\n"
-            f"🔥 𝗞𝗲𝗲𝗽 𝘁𝗵𝗲 𝗯𝗲𝗮𝘁𝘀 𝗮𝗹𝗶𝘃𝗲!"
-        )
+    # Set a fallback photo if no profile picture
+    if not photo_id:
+        photo = random.choice(DEFAULT_IMAGE)
+    else:
+        photo = photo_id
 
-    kb = InlineKeyboardMarkup(
-        [[InlineKeyboardButton("⏹ 𝗖𝗹𝗼𝘀𝗲", callback_data="close_profile")]]
-    )
+    # Extract basic details
+    name = user.first_name or "No Name"
+    user_id = user.id
+    username = f"@{user.username}" if user.username else "N/A"
 
-    await message.reply_photo(photo, caption=text, reply_markup=kb)
+    # Construct music profile text
+    if count == 0:
+        text = (
+            f"🎶 <b>Personal Music Profile</b> 🎶\n\n"
+            f"<b>Name:</b> {name}\n"
+            f"<b>ID:</b> <code>{user_id}</code>\n"
+            f"<b>Username:</b> {username}\n\n"
+            f"{info_caption}\n"
+            f"🎧 <b>Songs Played:</b> 0\n"
+            f"📊 <b>Rank:</b> Unranked\n"
+            f"💡 You haven't played any songs yet. Start vibing with the playlist!\n"
+            f"🔻 <b>Powered by:</b> {app.mention}"
+        )
+    else:
+        text = (
+            f"🎶 <b>Personal Music Profile</b> 🎶\n\n"
+            f"<b>Name:</b> {name}\n"
+            f"<b>ID:</b> <code>{user_id}</code>\n"
+            f"<b>Username:</b> {username}\n\n"
+            f"{info_caption}\n"
+            f"🎧 <b>Songs Played:</b> {count}\n"
+            f"📊 <b>Rank:</b> #{rank}\n"
+            f"🔥 Keep the beats alive!"
+        )
+
+    # Close button
+    kb = InlineKeyboardMarkup(
+        [[InlineKeyboardButton("⏹ Close", callback_data="close_profile")]]
+    )
+
+    # Send profile photo + caption
+    await message.reply_photo(photo, caption=text, reply_markup=kb)
 
 @app.on_callback_query(filters.regex("^close_profile$"))
 async def close_profile(client: Client, cq: CallbackQuery):
