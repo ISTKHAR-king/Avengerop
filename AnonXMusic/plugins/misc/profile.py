@@ -45,13 +45,6 @@ async def get_user_profile(user_id: int):
 
 # ───── Handlers ────────────────────────────────────────
 
-# 1) Track /play and /vplay without interfering
-@app.on_message(filters.group & filters.text)
-async def track_play(client: Client, message: Message):
-    text = message.text or ""
-    if text.startswith(("/play", "/vplay")) and message.from_user:
-        await update_song_count(message.chat.id, message.from_user.id)
-
 @app.on_message(filters.command("leaderboard") & filters.group)
 async def leaderboard_menu(client: Client, message: Message):
     print("Leaderboard command received")  # Debugging line
