@@ -194,7 +194,7 @@ async def show_weekly_leaderboard(client: Client, cq: CallbackQuery):
     if not leaderboard or leaderboard[0][1] == 0:
         return await cq.message.edit_text("No songs played this week!")
 
-    text = "📊 𝗧𝗢𝗣 𝗚𝗥𝗢𝗨𝗣𝗦 𝗪𝗘𝗘𝗞 | 🌍/n (𝗧𝗵𝗶𝘀 𝗪𝗲𝗲𝗸’𝘀 𝗦𝗼𝗻𝗴𝘀 𝗣𝗹𝗮𝘆𝗲𝗱) 📊\n\n"
+    text = "📊 𝗧𝗢𝗣 𝗚𝗥𝗢𝗨𝗣𝗦 𝗪𝗘𝗘𝗞 | 🌍/n𝗧𝗵𝗶𝘀 𝗪𝗲𝗲𝗸’𝘀 𝗦𝗼𝗻𝗴𝘀 𝗣𝗹𝗮𝘆𝗲𝗱 📊\n\n"
     for i, (group_id, count) in enumerate(leaderboard, 1):
         try:
             chat = await client.get_chat(group_id)
@@ -220,7 +220,7 @@ async def show_top_users(client: Client, cq: CallbackQuery):
     if not leaderboard:
         return await cq.message.edit_text("No user data found!")
 
-    text = "🏆 𝗧𝗼𝗽 𝟭𝟬 𝗨𝘀𝗲𝗿𝘀 (𝗢𝘃𝗲𝗿𝗮𝗹𝗹 𝗦𝗼𝗻𝗴𝘀 𝗣𝗹𝗮𝘆𝗲𝗱) 🏆\n\n"
+    text = "📈 𝗚𝗟𝗢𝗕𝗔𝗟 𝗟𝗘𝗔𝗗𝗘𝗥𝗕𝗢𝗔𝗥𝗗 𝘁𝗼𝗱𝗮𝘆 | 🌍\n\n"
     for i, (user_id, count) in enumerate(leaderboard, 1):
         try:
             user = await client.get_users(int(user_id))
