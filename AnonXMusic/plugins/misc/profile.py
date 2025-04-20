@@ -12,7 +12,7 @@ from AnonXMusic.utils.database import song_stats_db
 import random
 
 # Default placeholder image
-DEFAULT_IMAGES = [
+DEFAULT_IMAGE = [
     "https://graph.org/file/f20072ed0125e05c4a179-749b57b82ab375adfb.jpg",
     "https://graph.org/file/671aa8e4b175394089634-885eaf7d16ee0ab42f.jpg", 
     "https://graph.org/file/5146d19a7e8f4a4bf135e-2c1a0899cc2de6efd4.jpg", 
@@ -88,10 +88,10 @@ async def user_profile(client: Client, message: Message):
         if photos.total_count > 0:
             photo = photos.photos[0][0].file_id
         else:
-            photo = random.choice(DEFAULT_IMAGES)
+            photo = random.choice(DEFAULT_IMAGE)
     except Exception as e:
         print(e)
-        photo = random.choice(DEFAULT_IMAGES)
+        photo = random.choice(DEFAULT_IMAGE)
 
     uname = message.from_user.username or "N/A"
     name = message.from_user.first_name
