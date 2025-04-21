@@ -51,8 +51,10 @@ async def get_user_profile(user_id: int):
     sorted_users = sorted(user_counter.items(), key=itemgetter(1), reverse=True)
     count = user_counter.get(str(user_id), 0)
     rank = next((i+1 for i, (u, _) in enumerate(sorted_users) if u == str(user_id)), None)
-    return count, rank
+   
     print(f"User counter: {user_counter}")
+    return count, rank
+    
 # ───── Handlers ────────────────────────────────────────
 
 @app.on_message(filters.command("leaderboard") & filters.group)
@@ -262,20 +264,3 @@ async def back_to_leaderboard(client: Client, cq: CallbackQuery):
     "Select a category below to view:",
     reply_markup=kb
 )
-
-#------------------------------Daily_Reset--------------------------
-
-def reset_daily_data():
-    today = datetime.utcnow().strftime("%Y-%m-%d")
-    song_stats_db.update_many({}, {"$set": {f"daily.{today}": 0}})
-
-def reset_weekly_data():
-    today = datetime.utcnow()
-    last_monday = today - timedelta(days=today.weekday())
-    last_monday = last_monday.replace(hour=0, minute=0, second=0, microsecond=0)
-    song_stats_db.update_many({}, {"$set": {f"weekly.{last_monday.strftime('%Y-%m-%d')}": 0}})
-
-scheduler = AsyncIOScheduler()
-scheduler.add_job(reset_daily_data, CronTrigger(hour=0, minute=0, second=0))  # Reset daily data at midnight
-scheduler.add_job(reset_weekly_data, CronTrigger(hour=0, minute=0, second=0, day_of_week="mon"))  # Reset weekly data every Monday at midnight
-scheduler.start()
