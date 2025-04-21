@@ -38,26 +38,13 @@ async def broadcast_command(client, message, _):
     command_text = message.text.lower()
     mode = "forward" if "-forward" in command_text else "copy"
 
-    if "-all" in command_text:
-        target_chats = await get_served_chats()
-        users = await get_served_users()
+    target_chats, target_users = [], []
 
-        # Verify reachable users
-        target_users = []
-        for user_id in users:
-            try:
-                await app.get_chat(user_id)
-                target_users.append(user_id)
-            except:
-                continue
-    elif "-users" in command_text:
-        target_chats = []
+    if "-users" in command_text or "-nochats" in command_text:
         target_users = await get_served_users()
-    elif "-chats" in command_text:
-        target_chats = await get_served_chats()
-        target_users = []
     else:
-        return await message.reply_text("Please use a valid tag: `-all`, `-users`, `-chats`.")
+        target_chats = await get_served_chats()
+        target_users = await get_served_users()
 
     if not target_chats and not target_users:
         return await message.reply_text("No targets found for broadcast.")
@@ -159,6 +146,7 @@ async def broadcast_command(client, message, _):
         "failed": failed_count,
         "time": total_time
     })
+
 
 @app.on_message(filters.command("broadcaststats") & SUDOERS)
 async def broadcast_stats(_, message):
