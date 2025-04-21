@@ -40,7 +40,16 @@ async def broadcast_command(client, message, _):
 
     if "-all" in command_text:
         target_chats = await get_served_chats()
-        target_users = await get_served_users()
+        users = await get_served_users()
+
+        # Verify reachable users
+        target_users = []
+        for user_id in users:
+            try:
+                await app.get_chat(user_id)
+                target_users.append(user_id)
+            except:
+                continue
     elif "-users" in command_text:
         target_chats = []
         target_users = await get_served_users()
