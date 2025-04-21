@@ -21,11 +21,11 @@ from config import adminlist
 # Configurable limits
 REQUEST_LIMIT = 50
 BATCH_SIZE = 1000
-BATCH_DELAY = 3
+BATCH_DELAY = 2
 MAX_RETRIES = 3
 PING_EVERY_BATCHES = 10
-STATUS_UPDATE_EVERY = 2
-SLICE_SIZE = 10000
+STATUS_UPDATE_EVERY = 1
+SLICE_SIZE = 20000
 
 last_broadcast_result = {}
 
@@ -38,22 +38,22 @@ async def broadcast_command(client, message, _):
     command_text = message.text.lower()
     mode = "forward" if "-forward" in command_text else "copy"
 
-    # Determine targets based on tags
     users = await get_served_users()
     target_chats = await get_served_chats()
 
+    # Properly determine targets based on provided flags
     if "-users" in command_text:
-        target_chats = []
+        targets = users
     elif "-nochats" in command_text:
-        target_chats = []
-    # else → both users & chats as default
+        targets = target_chats
+    else:
+        targets = target_chats + users
 
-    if not target_chats and not users:
+    if not targets:
         return await message.reply_text("No targets found for broadcast.")
 
     start_time = time.time()
     sent_count, failed_count = 0, 0
-    targets = target_chats + users
     total_targets = len(targets)
 
     status_msg = await message.reply_text(f"Broadcast started in `{mode}` mode...\n\nProgress: `0%`")
