@@ -38,20 +38,22 @@ async def broadcast_command(client, message, _):
     command_text = message.text.lower()
     mode = "forward" if "-forward" in command_text else "copy"
 
-    target_chats, target_users = [], []
+    # Determine targets based on tags
+    users = await get_served_users()
+    target_chats = await get_served_chats()
 
-    if "-users" in command_text or "-nochats" in command_text:
-        target_users = await get_served_users()
-    else:
-        target_chats = await get_served_chats()
-        target_users = await get_served_users()
+    if "-users" in command_text:
+        target_chats = []
+    elif "-nochats" in command_text:
+        target_chats = []
+    # else → both users & chats as default
 
-    if not target_chats and not target_users:
+    if not target_chats and not users:
         return await message.reply_text("No targets found for broadcast.")
 
     start_time = time.time()
     sent_count, failed_count = 0, 0
-    targets = target_chats + target_users
+    targets = target_chats + users
     total_targets = len(targets)
 
     status_msg = await message.reply_text(f"Broadcast started in `{mode}` mode...\n\nProgress: `0%`")
@@ -62,10 +64,9 @@ async def broadcast_command(client, message, _):
             try:
                 if mode == "forward":
                     await app.forward_messages(
-                        chat_id,
-                        message.chat.id,
-                        message.reply_to_message.id,
-                        as_copy=False
+                        chat_id=chat_id,
+                        from_chat_id=message.chat.id,
+                        message_ids=message.reply_to_message.id
                     )
                 else:
                     await message.reply_to_message.copy(chat_id)
@@ -129,7 +130,7 @@ async def broadcast_command(client, message, _):
     total_time = round(time.time() - start_time, 2)
 
     final_summary = (
-        f"✅𝗕𝗿𝗼𝗮𝗱𝗰𝗮𝘀𝘁 𝗥𝗲𝗽𝗼𝗿𝘁📢\n\n"
+        f"✅𝗕𝗿𝗼𝗮𝗱𝗰𝗮𝘀𝘁 𝗥𝗲𝗽𝗼𝗿𝘁 📢\n\n"
         f"Mode: {mode}\n"
         f"Total Targets: {total_targets}\n"
         f"Successful: {sent_count} 🟢\n"
@@ -146,7 +147,6 @@ async def broadcast_command(client, message, _):
         "failed": failed_count,
         "time": total_time
     })
-
 
 @app.on_message(filters.command("broadcaststats") & SUDOERS)
 async def broadcast_stats(_, message):
@@ -181,6 +181,5 @@ async def auto_clean():
                         adminlist[chat_id].append(user_id)
         except:
             continue
-
 
 asyncio.create_task(auto_clean())
