@@ -98,9 +98,9 @@ async def user_profile(client: Client, message: Message):
             f"🎶 𝗣𝗲𝗿𝘀𝗼𝗻𝗮𝗹 𝗠𝘂𝘀𝗶𝗰 𝗣𝗿𝗼𝗳𝗶𝗹𝗲 🎶\n\n"
             f"👤 𝗡𝗮𝗺𝗲: {name}\n"
             f"✨ 𝗨𝘀𝗲𝗿𝗻𝗮𝗺𝗲: @{uname}\n"
-            f"🆔 𝗨𝘀𝗲𝗿 𝗜𝗗: {uid}\n"
-            f"🎧 𝗦𝗼𝗻𝗴𝘀 𝗣𝗹𝗮𝘆𝗲𝗱: 0\n"
-            f"📊 𝗥𝗮𝗻𝗸: Unranked\n"
+            f"🆔 𝗨𝘀𝗲𝗿 𝗜𝗗: <code>{uid}</code>\n"
+            f"🎧 𝗦𝗼𝗻𝗴𝘀 𝗣𝗹𝗮𝘆𝗲𝗱: <code>0</code>\n"
+            f"📊 𝗥𝗮𝗻𝗸: <code>Unranked</code>\n"
             f"💡 𝗬𝗼𝘂 𝗵𝗮𝘃𝗲𝗻'𝘁 𝗽𝗹𝗮𝘆𝗲𝗱 𝗮𝗻𝘆 𝘀𝗼𝗻𝗴𝘀 𝘆𝗲𝘁. 𝗦𝘁𝗮𝗿𝘁 𝘃𝗶𝗯𝗶𝗻𝗴 𝘄𝗶𝘁𝗵 𝘁𝗵𝗲 𝗽𝗹𝗮𝘆𝗹𝗶𝘀𝘁!\n"
             f"🔻 𝗣𝗼𝘄𝗲𝗿𝗲𝗱 𝗯𝘆: {app.mention}"
         )
@@ -109,9 +109,9 @@ async def user_profile(client: Client, message: Message):
             f"🎶 𝗣𝗲𝗿𝘀𝗼𝗻𝗮𝗹 𝗠𝘂𝘀𝗶𝗰 𝗣𝗿𝗼𝗳𝗶𝗹𝗲 🎶\n\n"
             f"👤 𝗡𝗮𝗺𝗲: {name}\n"
             f"✨ 𝗨𝘀𝗲𝗿𝗻𝗮𝗺𝗲: @{uname}\n"
-            f"🆔 𝗨𝘀𝗲𝗿 𝗜𝗗: {uid}\n"
-            f"🎧 𝗦𝗼𝗻𝗴𝘀 𝗣𝗹𝗮𝘆𝗲𝗱: {count}\n"
-            f"📊 𝗥𝗮𝗻𝗸: #{rank}\n\n"
+            f"🆔 𝗨𝘀𝗲𝗿 𝗜𝗗: <code>{uid}</code>\n"
+            f"🎧 𝗦𝗼𝗻𝗴𝘀 𝗣𝗹𝗮𝘆𝗲𝗱: <code>{count}</code>\n"
+            f"📊 𝗥𝗮𝗻𝗸: <code>#{rank}</code>\n\n"
             f"🔥 𝗞𝗲𝗲𝗽 𝘁𝗵𝗲 𝗯𝗲𝗮𝘁𝘀 𝗮𝗹𝗶𝘃𝗲!"
         )
 
@@ -156,11 +156,11 @@ async def show_overall_leaderboard(client: Client, cq: CallbackQuery):
     for i, (group_id, count) in enumerate(leaderboard, 1):
         try:
             chat = await client.get_chat(group_id)
-            text += f"{i}. 👥 {chat.title} — {count} songs\n"
+            text += f"<b>{i}.</b> 👥 {chat.title} — <code>{count}</code> songs\n"
         except:
-            text += f"{i}. 👥 Unknown[{group_id}] — {count} songs\n"
+            text += f"<b>{i}.</b> 👥 Unknown[{group_id}] — <code>{count}</code> songs\n"
 
-    text += f"\n🎵 𝗧𝗼𝘁𝗮𝗹 𝗣𝗹𝗮𝘆𝗲𝗱 𝗦𝗼𝗻𝗴𝘀: {total_songs}"
+    text += f"\n🎵 𝗧𝗼𝘁𝗮𝗹 𝗣𝗹𝗮𝘆𝗲𝗱 𝗦𝗼𝗻𝗴𝘀: <code>{total_songs}</code>"
     text += f"\n♨️ Powered By : {app.mention}"
 
     kb = InlineKeyboardMarkup([[InlineKeyboardButton("🔙 Back", callback_data="back_leaderboard")]])
@@ -183,11 +183,11 @@ async def show_today_leaderboard(client: Client, cq: CallbackQuery):
     for i, (group_id, count) in enumerate(leaderboard, 1):
         try:
             chat = await client.get_chat(group_id)
-            text += f"{i}. 👥 {chat.title} — {count} songs\n"
+            text += f"<b>{i}.</b> 👥 {chat.title} — <code>{count}</code> songs\n"
         except:
-            text += f"{i}. 👥 Unknown[{group_id}] — {count} songs\n"
+            text += f"<b>{i}.</b> 👥 Unknown[{group_id}] — <code>{count}</code> songs\n"
 
-    text += f"\nTotal Played Songs: {total_songs}"
+    text += f"\nTotal Played Songs: <code>{total_songs}</code>"
     text += f"\nPowered By : {app.mention}"
 
     kb = InlineKeyboardMarkup([[InlineKeyboardButton("🔙 Back", callback_data="back_leaderboard")]])
@@ -212,11 +212,11 @@ async def show_weekly_leaderboard(client: Client, cq: CallbackQuery):
     for i, (group_id, count) in enumerate(leaderboard, 1):
         try:
             chat = await client.get_chat(group_id)
-            text += f"{i}. 👥 {chat.title} — {count} songs\n"
+            text += f"<b>{i}.</b> 👥 {chat.title} — <code>{count}</code> songs\n"
         except:
-            text += f"{i}. 👥 Unknown[{group_id}] — {count} songs\n"
+            text += f"<b>{i}.</b> 👥 Unknown[{group_id}] — <code>{count}</code> songs\n"
 
-    text += f"\n🎵 𝗧𝗼𝘁𝗮𝗹 𝗣𝗹𝗮𝘆𝗲𝗱 𝗦𝗼𝗻𝗴𝘀: {total_songs}"
+    text += f"\n🎵 𝗧𝗼𝘁𝗮𝗹 𝗣𝗹𝗮𝘆𝗲𝗱 𝗦𝗼𝗻𝗴𝘀: <code>{total_songs}</code>"
     text += f"\n♨️ Powered By : {app.mention}"
 
     kb = InlineKeyboardMarkup([[InlineKeyboardButton("🔙 Back", callback_data="back_leaderboard")]])
@@ -239,11 +239,11 @@ async def show_top_users(client: Client, cq: CallbackQuery):
     for i, (user_id, count) in enumerate(leaderboard, 1):
         try:
             user = await client.get_users(int(user_id))
-            text += f"{i}. 👤 {user.first_name} [{user.id}] — {count} songs\n"
+            text += f"<b>{i}.</b> <a href='tg://user?id={user.id}'>👤 {user.first_name}</a> — <code>{count}</code> songs\n"
         except:
-            text += f"{i}. 👤 Unknown[{user_id}] — {count} songs\n"
+            text += f"<b>{i}.</b> <a href='tg://user?id={user.id}'>👤 Unknown</a> — <code>{count}</code> songs\n"
 
-    text += f"\n🎵 𝗧𝗼𝘁𝗮𝗹 𝗣𝗹𝗮𝘆𝗲𝗱 𝗦𝗼𝗻𝗴𝘀: {total_songs}"
+    text += f"\n🎵 𝗧𝗼𝘁𝗮𝗹 𝗣𝗹𝗮𝘆𝗲𝗱 𝗦𝗼𝗻𝗴𝘀: <code>{total_songs}</code>"
     text += f"\n♨️ Powered By : {app.mention}"
 
     kb = InlineKeyboardMarkup([[InlineKeyboardButton("🔙 Back", callback_data="back_leaderboard")]])
