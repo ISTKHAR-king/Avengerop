@@ -22,7 +22,7 @@ from config import adminlist
 REQUEST_LIMIT = 50
 BATCH_SIZE = 500
 BATCH_DELAY = 2
-MAX_RETRIES = 3
+MAX_RETRIES = 2
 
 # Global broadcast result tracker
 last_broadcast_result = {}
