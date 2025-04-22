@@ -18,15 +18,13 @@ from AnonXMusic.utils.decorators.language import language
 from AnonXMusic.utils.formatters import alpha_to_int
 from config import adminlist
 
-# Configurable limits
+
 REQUEST_LIMIT = 50
-BATCH_SIZE = 1000
+BATCH_SIZE = 500
 BATCH_DELAY = 2
 MAX_RETRIES = 3
-PING_EVERY_BATCHES = 10
-STATUS_UPDATE_EVERY = 1
-SLICE_SIZE = 20000
 
+# Global broadcast result tracker
 last_broadcast_result = {}
 
 @app.on_message(filters.command("broadcast") & SUDOERS)
@@ -38,22 +36,24 @@ async def broadcast_command(client, message, _):
     command_text = message.text.lower()
     mode = "forward" if "-forward" in command_text else "copy"
 
-    users = await get_served_users()
-    target_chats = await get_served_chats()
-
-    # Properly determine targets based on provided flags
-    if "-users" in command_text:
-        targets = users
-    elif "-nochats" in command_text:
-        targets = target_chats
+    if "-all" in command_text:
+        target_chats = await get_served_chats()
+        target_users = await get_served_users()
+    elif "-users" in command_text:
+        target_chats = []
+        target_users = await get_served_users()
+    elif "-chats" in command_text:
+        target_chats = await get_served_chats()
+        target_users = []
     else:
-        targets = target_chats + users
+        return await message.reply_text("Please use a valid tag: `-all`, `-users`, `-chats`.")
 
-    if not targets:
+    if not target_chats and not target_users:
         return await message.reply_text("No targets found for broadcast.")
 
     start_time = time.time()
     sent_count, failed_count = 0, 0
+    targets = target_chats + target_users
     total_targets = len(targets)
 
     status_msg = await message.reply_text(f"Broadcast started in `{mode}` mode...\n\nProgress: `0%`")
@@ -64,9 +64,10 @@ async def broadcast_command(client, message, _):
             try:
                 if mode == "forward":
                     await app.forward_messages(
-                        chat_id=chat_id,
-                        from_chat_id=message.chat.id,
-                        message_ids=message.reply_to_message.id
+                        chat_id,
+                        message.chat.id,
+                        message.reply_to_message.id,
+                        as_copy=False  # Important: Don't hide sender
                     )
                 else:
                     await message.reply_to_message.copy(chat_id)
@@ -80,57 +81,39 @@ async def broadcast_command(client, message, _):
 
     async def broadcast_targets(target_list):
         nonlocal sent_count, failed_count
-        batch_count = 0
-        total_batches = (len(target_list) + BATCH_SIZE - 1) // BATCH_SIZE
-
         for i in range(0, len(target_list), BATCH_SIZE):
             batch = target_list[i:i + BATCH_SIZE]
             tasks = []
-
             for chat_id in batch:
                 if len(tasks) >= REQUEST_LIMIT:
                     await asyncio.gather(*tasks)
                     tasks.clear()
                 tasks.append(send_with_retries(chat_id))
-
             if tasks:
                 await asyncio.gather(*tasks)
-
-            batch_count += 1
-
-            if batch_count % PING_EVERY_BATCHES == 0:
-                try:
-                    await app.get_me()
-                except Exception as e:
-                    print(f"Session health ping failed: {e}")
-                    await asyncio.sleep(2)
-
-            if batch_count % STATUS_UPDATE_EVERY == 0 or batch_count == total_batches:
-                percent = round((sent_count + failed_count) / total_targets * 100, 2)
-                elapsed = time.time() - start_time
-                eta = (elapsed / (sent_count + failed_count)) * (total_targets - (sent_count + failed_count)) if sent_count + failed_count > 0 else 0
-                eta_formatted = f"{int(eta // 60)}m {int(eta % 60)}s"
-
-                progress_bar = f"[{'█' * int(percent // 5)}{'░' * (20 - int(percent // 5))}]"
-                await status_msg.edit_text(
-                    f"𝗕𝗿𝗼𝗮𝗱𝗰𝗮𝘀𝘁 𝗣𝗿𝗼𝗴𝗿𝗲𝘀𝘀 📢\n"
-                    f"{progress_bar} {percent}%\n"
-                    f"Sent:  {sent_count}  🟢\n"
-                    f"Failed: {failed_count}  🔴\n"
-                    f"ETA:  {eta_formatted} ⏳"
-                )
-
             await asyncio.sleep(BATCH_DELAY)
 
-        await asyncio.sleep(1)
+            # Update progress and ETA after each batch
+            percent = round((sent_count + failed_count) / total_targets * 100, 2)
+            elapsed = time.time() - start_time
+            eta = (elapsed / (sent_count + failed_count)) * (total_targets - (sent_count + failed_count)) if sent_count + failed_count > 0 else 0
+            eta_formatted = f"{int(eta//60)}m {int(eta%60)}s"
 
-    for j in range(0, total_targets, SLICE_SIZE):
-        await broadcast_targets(targets[j:j + SLICE_SIZE])
+            progress_bar = f"[{'█' * int(percent//5)}{'░' * (20-int(percent//5))}]"
+            await status_msg.edit_text(
+                f"Broadcast Progress:\n"
+                f"{progress_bar} {percent}%\n"
+                f"Sent: {sent_count} 🟢\n"
+                f"Failed: {failed_count} 🔴\n"
+                f"ETA: {eta_formatted} ⏳"
+            )
+
+    await broadcast_targets(targets)
 
     total_time = round(time.time() - start_time, 2)
 
     final_summary = (
-        f"✅𝗕𝗿𝗼𝗮𝗱𝗰𝗮𝘀𝘁 𝗥𝗲𝗽𝗼𝗿𝘁 📢\n\n"
+        f"✅Broadcast Report📢\n\n"
         f"Mode: {mode}\n"
         f"Total Targets: {total_targets}\n"
         f"Successful: {sent_count} 🟢\n"
@@ -140,6 +123,7 @@ async def broadcast_command(client, message, _):
 
     await status_msg.edit_text(final_summary)
 
+    # Store last result globally for /broadcaststats command
     last_broadcast_result.update({
         "mode": mode,
         "total": total_targets,
@@ -148,6 +132,7 @@ async def broadcast_command(client, message, _):
         "time": total_time
     })
 
+# Optional: /broadcaststats command
 @app.on_message(filters.command("broadcaststats") & SUDOERS)
 async def broadcast_stats(_, message):
     if not last_broadcast_result:
@@ -155,12 +140,12 @@ async def broadcast_stats(_, message):
 
     res = last_broadcast_result
     await message.reply_text(
-        f"📝 Last Broadcast Report:\n\n"
-        f"♨️ Mode: {res['mode']}\n"
-        f"✨ Total Targets: {res['total']}\n"
-        f"✅ Successful: {res['sent']} \n"
-        f"⛔ Failed: {res['failed']} \n"
-        f"🔮 Time Taken: {res['time']} seconds ⏰"
+        f"Last Broadcast Report:\n\n"
+        f"Mode: {res['mode']}\n"
+        f"Total Targets: {res['total']}\n"
+        f"Successful: {res['sent']} 🟢\n"
+        f"Failed: {res['failed']} 🔴\n"
+        f"Time Taken: {res['time']} seconds ⏰"
     )
 
 async def auto_clean():
@@ -181,5 +166,6 @@ async def auto_clean():
                         adminlist[chat_id].append(user_id)
         except:
             continue
+
 
 asyncio.create_task(auto_clean())
