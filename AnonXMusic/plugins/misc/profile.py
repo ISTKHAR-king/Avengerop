@@ -99,27 +99,27 @@ async def user_profile(client: Client, message: Message):
     if count == 0:
         text = (
             f"🎶 𝗣𝗲𝗿𝘀𝗼𝗻𝗮𝗹 𝗠𝘂𝘀𝗶𝗰 𝗣𝗿𝗼𝗳𝗶𝗹𝗲 🎶\n\n"
-            f"👤 𝗡𝗮𝗺𝗲: {name}\n"
-            f"✨ 𝗨𝘀𝗲𝗿𝗻𝗮𝗺𝗲: @{uname}\n"
-            f"🆔 𝗨𝘀𝗲𝗿 𝗜𝗗: <code>{uid}</code>\n"
-            f"🎧 𝗦𝗼𝗻𝗴𝘀 𝗣𝗹𝗮𝘆𝗲𝗱: <code>0</code>\n"
-            f"📊 𝗥𝗮𝗻𝗸: <code>Unranked</code>\n"
-            f"💡 𝗬𝗼𝘂 𝗵𝗮𝘃𝗲𝗻'𝘁 𝗽𝗹𝗮𝘆𝗲𝗱 𝗮𝗻𝘆 𝘀𝗼𝗻𝗴𝘀 𝘆𝗲𝘁. 𝗦𝘁𝗮𝗿𝘁 𝘃𝗶𝗯𝗶𝗻𝗴 𝘄𝗶𝘁𝗵 𝘁𝗵𝗲 𝗽𝗹𝗮𝘆𝗹𝗶𝘀𝘁!\n"
-            f"🔻 𝗣𝗼𝘄𝗲𝗿𝗲𝗱 𝗯𝘆: {app.mention}"
+            f"👤 Name: {name}\n"
+            f"✨ Username: @{uname}\n"
+            f"🆔 User ID: <code>{uid}</code>\n"
+            f"🎧 Songs Played: <code>0</code>\n"
+            f"📊 Rank: <code>Unranked</code>\n"
+            f"💡 You haven't played any songs yet. Start vibing with the playlist!\n"
+            f"🔻 Powered by: {app.mention}"
         )
     else:
         text = (
             f"🎶 𝗣𝗲𝗿𝘀𝗼𝗻𝗮𝗹 𝗠𝘂𝘀𝗶𝗰 𝗣𝗿𝗼𝗳𝗶𝗹𝗲 🎶\n\n"
-            f"👤 𝗡𝗮𝗺𝗲: {name}\n"
-            f"✨ 𝗨𝘀𝗲𝗿𝗻𝗮𝗺𝗲: @{uname}\n"
-            f"🆔 𝗨𝘀𝗲𝗿 𝗜𝗗: <code>{uid}</code>\n"
-            f"🎧 𝗦𝗼𝗻𝗴𝘀 𝗣𝗹𝗮𝘆𝗲𝗱: <code>{count}</code>\n"
-            f"📊 𝗥𝗮𝗻𝗸: <code>#{rank}</code>\n\n"
-            f"🔥 𝗞𝗲𝗲𝗽 𝘁𝗵𝗲 𝗯𝗲𝗮𝘁𝘀 𝗮𝗹𝗶𝘃𝗲!"
+            f"👤 Name: {name}\n"
+            f"✨ Username: @{uname}\n"
+            f"🆔 User ID: <code>{uid}</code>\n"
+            f"🎧 Songs Played: <code>{count}</code>\n"
+            f"📊 Rank: <code>#{rank}</code>\n\n"
+            f"<b>🔥 Keep the beats alive!</b>"
         )
 
     kb = InlineKeyboardMarkup(
-        [[InlineKeyboardButton("⏹ 𝗖𝗹𝗼𝘀𝗲", callback_data="close_profile")]]
+        [[InlineKeyboardButton("⏹ close", callback_data="close_profile")]]
     )
 
     await message.reply_photo(photo, caption=text, reply_markup=kb)
