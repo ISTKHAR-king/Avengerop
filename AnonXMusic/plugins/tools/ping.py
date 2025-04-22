@@ -14,15 +14,37 @@ from config import BANNED_USERS, PING_IMG_URL
 @app.on_message(filters.command(["ping", "alive"]) & ~BANNED_USERS)
 @language
 async def ping_com(client, message: Message, _):
-    start = datetime.now()
-    response = await message.reply_photo(
+    start_time = datetime.now()
+
+    # Send initial loading message
+    initial_response = await message.reply_photo(
         photo=PING_IMG_URL,
-        caption=_["ping_1"].format(app.mention),
+        caption=f"🔍 Checking system status...\nPlease wait a moment, {app.mention} is running diagnostics.",
     )
-    pytgping = await Anony.ping()
-    UP, CPU, RAM, DISK = await bot_sys_stats()
-    resp = (datetime.now() - start).microseconds / 1000
-    await response.edit_text(
-        _["ping_2"].format(resp, app.mention, UP, RAM, CPU, DISK, pytgping),
+
+    # Gather stats
+    pytg_ping = await Anony.ping()
+    uptime, cpu, ram, disk = await bot_sys_stats()
+    end_time = datetime.now()
+    ping_time = (end_time - start_time).microseconds / 1000
+
+    # Final caption
+    caption = f"""
+<b>✨ {app.mention} is Alive and Ready!</b>
+
+<b>⚡ Bot Ping:</b> <code>{ping_time:.2f} ms</code>
+<b>📡 PyTg Call Ping:</b> <code>{pytg_ping} ms</code>
+<b>⏱ Uptime:</b> <code>{uptime}</code>
+
+<b>💾 RAM Usage:</b> <code>{ram}</code>
+<b>🖥 CPU Load:</b> <code>{cpu}</code>
+<b>🗄 Disk:</b> <code>{disk}</code>
+
+<b>Need help or have suggestions?</b>
+Tap the button below!
+"""
+
+    await initial_response.edit_caption(
+        caption=caption,
         reply_markup=supp_markup(_),
     )
