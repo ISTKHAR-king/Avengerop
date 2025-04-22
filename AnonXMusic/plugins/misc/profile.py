@@ -64,11 +64,11 @@ async def get_user_profile(user_id: int):
 async def leaderboard_menu(client: Client, message: Message):
     print("Leaderboard command received")
     kb = InlineKeyboardMarkup([
-        [InlineKeyboardButton("🔥 𝗧𝗼𝗽 𝗚𝗿𝗼𝘂𝗽𝘀 𝗢𝘃𝗲𝗿𝗮𝗹𝗹", callback_data="overall_songs")],
-        [InlineKeyboardButton("📅 𝗧𝗼𝗽 𝗚𝗿𝗼𝘂𝗽𝘀 𝗧𝗼𝗱𝗮𝘆", callback_data="today_songs")],
-        [InlineKeyboardButton("📊 𝗧𝗼𝗽 𝗚𝗿𝗼𝘂𝗽𝘀 𝗧𝗵𝗶𝘀 𝗪𝗲𝗲𝗸", callback_data="weekly_songs")],
-        [InlineKeyboardButton("🏆 𝗧𝗼𝗽 𝗠𝘂𝘀𝗶𝗰 𝗟𝗼𝘃𝗲𝗿𝘀", callback_data="top_users")], 
-        [InlineKeyboardButton("⏹ 𝗖𝗹𝗼𝘀𝗲", callback_data="close_profile")]
+        [InlineKeyboardButton("🔥 Top Groups Overall", callback_data="overall_songs")],
+        [InlineKeyboardButton("📅 Top Groups Today", callback_data="today_songs")],
+        [InlineKeyboardButton("📊 Top Groups This Week", callback_data="weekly_songs")],
+        [InlineKeyboardButton("🏆 Top Music Lovers", callback_data="top_users")], 
+        [InlineKeyboardButton("⏹ Close", callback_data="close_profile")]
     ])
     await message.reply_text(
     "🎶 𝗪𝗲𝗹𝗰𝗼𝗺𝗲 𝘁𝗼 𝗟𝗲𝗮𝗱𝗲𝗿𝗯𝗼𝗮𝗿𝗱 𝗠𝗲𝗻𝘂\n\n"
@@ -255,11 +255,11 @@ async def show_top_users(client: Client, cq: CallbackQuery):
 @app.on_callback_query(filters.regex("^back_leaderboard$"))
 async def back_to_leaderboard(client: Client, cq: CallbackQuery):
     kb = InlineKeyboardMarkup([
-        [InlineKeyboardButton("🔥 𝗢𝘃𝗲𝗿𝗮𝗹𝗹 𝗧𝗼𝗽 𝗚𝗿𝗼𝘂𝗽𝘀", callback_data="overall_songs")],
-        [InlineKeyboardButton("📅 𝗧𝗼𝗱𝗮𝘆 𝗧𝗼𝗽 𝗚𝗿𝗼𝘂𝗽𝘀", callback_data="today_songs")],
-        [InlineKeyboardButton("📊 𝗧𝗵𝗶𝘀 𝗪𝗲𝗲𝗸 𝗧𝗼𝗽 𝗚𝗿𝗼𝘂𝗽𝘀", callback_data="weekly_songs")],
-        [InlineKeyboardButton("🏆 𝗧𝗼𝗽 𝗠𝘂𝘀𝗶𝗰 𝗟𝗼𝘃𝗲𝗿𝘀", callback_data="top_users")], 
-        [InlineKeyboardButton("⏹ 𝗖𝗹𝗼𝘀𝗲", callback_data="close_profile")]
+        [InlineKeyboardButton("🔥 Top Groups Overall", callback_data="overall_songs")],
+        [InlineKeyboardButton("📅 Top Groups Today", callback_data="today_songs")],
+        [InlineKeyboardButton("📊 Top Groups This Week", callback_data="weekly_songs")],
+        [InlineKeyboardButton("🏆 Top Music Lovers", callback_data="top_users")], 
+        [InlineKeyboardButton("⏹ Close", callback_data="close_profile")]
     ])
     await cq.message.edit_text(
     "🎶 𝗪𝗲𝗹𝗰𝗼𝗺𝗲 𝘁𝗼 𝗟𝗲𝗮𝗱𝗲𝗿𝗯𝗼𝗮𝗿𝗱! 📊\n\n"
