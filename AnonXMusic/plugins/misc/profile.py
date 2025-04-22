@@ -244,7 +244,7 @@ async def show_top_users(client: Client, cq: CallbackQuery):
             user = await client.get_users(int(user_id))
             text += f"<b>{i}.</b> <a href='tg://user?id={user.id}'>👤 {user.first_name}</a> — <code>{count}</code> songs\n"
         except:
-            text += f"<b>{i}.</b> <a href='tg://user?id={user.id}'>👤 Unknown</a> — <code>{count}</code> songs\n"
+            text += f"<b>{i}.</b> <a href='tg://user?id={user_id}'>👤 Unknown</a> — <code>{count}</code> songs\n"
 
     text += f"\n🎵 𝗧𝗼𝘁𝗮𝗹 𝗣𝗹𝗮𝘆𝗲𝗱 𝗦𝗼𝗻𝗴𝘀: <code>{total_songs}</code>"
     text += f"\n♨️ Powered By : {app.mention}"
