@@ -25,7 +25,7 @@ async def stats_global(client, message: Message, _):
     upl = stats_buttons(_, message.from_user.id in SUDOERS)
     await message.reply_photo(
         photo=config.STATS_IMG_URL,
-        caption=f"**📊 Global Stats Panel for {app.mention}**",
+        caption=f"<b>📊 Global Stats Panel for {app.mention}</b>",
         reply_markup=upl,
     )
 
@@ -35,7 +35,7 @@ async def stats_global(client, message: Message, _):
 async def home_stats(client, CallbackQuery, _):
     upl = stats_buttons(_, CallbackQuery.from_user.id in SUDOERS)
     await CallbackQuery.edit_message_text(
-        text=f"**📊 Global Stats Panel for {app.mention}**",
+        text=f"<b>📊 Global Stats Panel for {app.mention}</b>",
         reply_markup=upl,
     )
 
@@ -48,16 +48,16 @@ async def overall_stats(client, CallbackQuery, _):
     served_chats = len(await get_served_chats())
     served_users = len(await get_served_users())
     text = (
-        f"**📈 Bot Usage Summary**\n\n"
-        f"**🤖 Bot Name:** {app.mention}\n"
-        f"**🎛 Assistants:** `{len(assistants)}`\n"
-        f"**🚫 Banned Users:** `{len(BANNED_USERS)}`\n"
-        f"**💬 Served Chats:** `{served_chats}`\n"
-        f"**👥 Served Users:** `{served_users}`\n"
-        f"**📦 Modules Loaded:** `{len(ALL_MODULES)}`\n"
-        f"**🛡️ Sudo Users:** `{len(SUDOERS)}`\n"
-        f"**👋 Auto Leave Assistants:** `{config.AUTO_LEAVING_ASSISTANT}`\n"
-        f"**⏱️ Max Song Duration:** `{config.DURATION_LIMIT_MIN} Minutes`\n"
+        f"<b>📈 Bot Usage Summary</b>\n\n"
+        f"<b>🤖 Bot Name:</b> {app.mention}\n"
+        f"<b>🎛 Assistants:</b> <code>{len(assistants)}</code>\n"
+        f"<b>🚫 Banned Users:</b> <code>{len(BANNED_USERS)}</code>\n"
+        f"<b>💬 Served Chats:</b> <code>{served_chats}</code>\n"
+        f"<b>👥 Served Users:</b> <code>{served_users}</code>\n"
+        f"<b>📦 Modules Loaded:</b> <code>{len(ALL_MODULES)}</code>\n"
+        f"<b>🛡️ Sudo Users:</b> <code>{len(SUDOERS)}</code>\n"
+        f"<b>👋 Auto Leave Assistants:</b> <code>{config.AUTO_LEAVING_ASSISTANT}</code>\n"
+        f"<b>⏱️ Max Song Duration:</b> <code>{config.DURATION_LIMIT_MIN} Minutes</code>\n"
     )
     med = InputMediaPhoto(media=config.STATS_IMG_URL, caption=text)
     try:
@@ -99,28 +99,28 @@ async def bot_stats(client, CallbackQuery, _):
     sudo_count = len(await get_sudoers())
 
     text = (
-        f"**📊 {app.mention} System Stats**\n\n"
-        f"**🔧 System:**\n"
-        f"• OS : `{platform.system()}`\n"
-        f"• RAM : `{ram}`\n"
-        f"• CPU Cores : `{p_core}` Physical | `{t_core}` Logical\n"
-        f"• Frequency : `{cpu_freq}`\n\n"
-        f"**💾 Disk & Database:**\n"
-        f"• Disk : `{total:.2f} GB` Total | `{used:.2f} GB` Used | `{free:.2f} GB` Free\n"
-        f"• DB Size : `{datasize:.2f} MB`\n"
-        f"• Storage Used : `{storage:.2f} MB`\n"
-        f"• Collections : `{call['collections']}` | Objects : `{call['objects']}`\n\n"
-        f"**👥 Usage:**\n"
-        f"• Served Chats : `{served_chats}`\n"
-        f"• Served Users : `{served_users}`\n\n"
-        f"**🔒 Moderation:**\n"
-        f"• Banned Users : `{len(BANNED_USERS)}`\n"
-        f"• Sudoers : `{sudo_count}`\n"
-        f"• Modules : `{len(ALL_MODULES)}`\n\n"
-        f"**⚙️ Software:**\n"
-        f"• Python : `{pyver.split()[0]}`\n"
-        f"• Pyrogram : `{pyrover}`\n"
-        f"• PyTgCalls : `{pytgver}`"
+        f"<b>📊 {app.mention} System Stats</b>\n\n"
+        f"<b>🔧 System:</b>\n"
+        f"• OS : <code>{platform.system()}</code>\n"
+        f"• RAM : <code>{ram}</code>\n"
+        f"• CPU Cores : <code>{p_core}</code> Physical | <code>{t_core}</code> Logical\n"
+        f"• Frequency : <code>{cpu_freq}</code>\n\n"
+        f"<b>💾 Disk & Database:</b>\n"
+        f"• Disk : <code>{total:.2f}GB</code> Total | <code>{used:.2f} GB</code> Used | <code>{free:.2f} GB</code> Free\n"
+        f"• DB Size : <code>{datasize:.2f} MB</code>\n"
+        f"• Storage Used : <code>{storage:.2f} MB</code>\n"
+        f"• Collections : <code>{call['collections']}</code> | Objects : `{call['objects']}`\n\n"
+        f"<b>👥 Usage:</b>\n"
+        f"• Served Chats : <code>{served_chats}</code>\n"
+        f"• Served Users : <code>{served_users}</code>\n\n"
+        f"<b>🔒 Moderation:</b>\n"
+        f"• Banned Users : <code>{len(BANNED_USERS)}</code>\n"
+        f"• Sudoers : <code>{sudo_count}</code>\n"
+        f"• Modules : <code>{len(ALL<b>_MODULES)}</code>\n\n"
+        f"<b>⚙️ Software:</b>\n"
+        f"• Python : <code>{pyver.split()[0]}</code>\n"
+        f"• Pyrogram : <code>{pyrover}</code>\n"
+        f"• PyTgCalls : <code>{pytgver}</code>"
     )
 
     med = InputMediaPhoto(media=config.STATS_IMG_URL, caption=text)
