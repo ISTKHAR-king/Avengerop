@@ -14,7 +14,7 @@ async def on_new_chat_members(client: Client, message: Message):
     for new_member in message.new_chat_members:
         if new_member.id == bot_user.id:
             added_by = (
-                f"[{message.from_user.first_name}](tg://user?id={message.from_user.id})"
+                f"<a href='tg://user?id={message.from_user.id}'>👤{message.from_user.first_name}</a>"
                 if message.from_user else "Unknown User"
             )
             chat_title = message.chat.title
