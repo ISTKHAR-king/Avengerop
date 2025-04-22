@@ -20,7 +20,7 @@ async def on_new_chat_members(client: Client, message: Message):
             chat_username = f"@{message.chat.username}" if message.chat.username else "Private Chat"
             
             log_text = (
-                f"``` \n"
+                f"```\n"
                 f"#NEWCHAT \n"
                 f"ᴄʜᴀᴛ ᴛɪᴛʟᴇ : {chat_title}\n"
                 f"ᴄʜᴀᴛ ɪᴅ : {chat_id}\n"
