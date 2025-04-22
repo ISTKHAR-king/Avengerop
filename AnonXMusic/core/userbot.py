@@ -190,7 +190,7 @@ class Userbot(Client):
             self.six.name = self.six.me.mention
             self.six.username = self.six.me.username
             assistantids.append(self.six.id)
-            LOGGER(__name__).info(f"Assistant Five Started as {self.six.name}")      
+            LOGGER(__name__).info(f"Assistant Six Started as {self.six.name}")      
             
             
         if config.STRING7:
@@ -205,14 +205,14 @@ class Userbot(Client):
                 await self.seven.send_message(config.LOGGER_ID, "Assistant Started")
             except:
                 LOGGER(__name__).error(
-                    "Assistant Account 5 has failed to access the log Group. Make sure that you have added your assistant to your log group and promoted as admin! "
+                    "Assistant Account 7 has failed to access the log Group. Make sure that you have added your assistant to your log group and promoted as admin! "
                 )
                 exit()
             self.seven.id = self.seven.me.id
             self.seven.name = self.seven.me.mention
             self.seven.username = self.seven.me.username
             assistantids.append(self.seven.id)
-            LOGGER(__name__).info(f"Assistant Five Started as {self.seven.name}")
+            LOGGER(__name__).info(f"Assistant Seven Started as {self.seven.name}")
 
     
     async def stop(self):
