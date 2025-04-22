@@ -603,6 +603,8 @@ class Call(PyTgCalls):
             await self.five.start()
         if config.STRING6:
             await self.six.start()
+        if config.STRING7:
+            await self.seven.start()
         
     async def decorators(self):
         @self.one.on_kicked()
@@ -610,16 +612,22 @@ class Call(PyTgCalls):
         @self.three.on_kicked()
         @self.four.on_kicked()
         @self.five.on_kicked()
+        @self.six.on_kicked()
+        @self.seven.on_kicked()
         @self.one.on_closed_voice_chat()
         @self.two.on_closed_voice_chat()
         @self.three.on_closed_voice_chat()
         @self.four.on_closed_voice_chat()
         @self.five.on_closed_voice_chat()
+        @self.six.on_closed_voice_chat()
+        @self.seven.on_closed_voice_chat()
         @self.one.on_left()
         @self.two.on_left()
         @self.three.on_left()
         @self.four.on_left()
         @self.five.on_left()
+        @self.six.on_left()
+        @self.seven.on_left()
         async def stream_services_handler(_, chat_id: int):
             await self.stop_stream(chat_id)
 
@@ -628,6 +636,8 @@ class Call(PyTgCalls):
         @self.three.on_stream_end()
         @self.four.on_stream_end()
         @self.five.on_stream_end()
+        @self.six.on_stream_end()
+        @self.seven.on_stream_end()
         async def stream_end_handler1(client, update: Update):
             if not isinstance(update, StreamAudioEnded):
                 return
