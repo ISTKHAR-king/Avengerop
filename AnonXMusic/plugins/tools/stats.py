@@ -116,7 +116,7 @@ async def bot_stats(client, CallbackQuery, _):
         f"<b>🔒 Moderation:</b>\n"
         f"• Banned Users : <code>{len(BANNED_USERS)}</code>\n"
         f"• Sudoers : <code>{sudo_count}</code>\n"
-        f"• Modules : <code>{len(ALL<b>_MODULES)}</code>\n\n"
+        f"• Modules : <code>{len(ALL_MODULES)}</code>\n\n"
         f"<b>⚙️ Software:</b>\n"
         f"• Python : <code>{pyver.split()[0]}</code>\n"
         f"• Pyrogram : <code>{pyrover}</code>\n"
