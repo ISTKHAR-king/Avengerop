@@ -26,11 +26,11 @@ async def on_new_chat_members(client: Client, message: Message):
             )
 
             log_text = (
-                f"**🤖 Bot Added to a New Chat!**\n\n"
-                f"**📌 Chat Name:** `{chat_title}`\n"
-                f"**🆔 Chat ID:** `{chat_id}`\n"
-                f"**🔗 Username:** {chat_username}\n"
-                f"**➕ Added By:** {added_by}"
+                f"<b>🤖 Bot Added to a New Chat!</b>\n\n"
+                f"<b>📌 Chat Name:</b> <code>{chat_title}</code>\n"
+                f"<b>🆔 Chat ID:</b> <code>{chat_id}</code>\n"
+                f"<b>🔗 Username:</b> {chat_username}\n"
+                f"<b>➕ Added By:</b> {added_by}"
             )
 
             buttons = []
@@ -52,7 +52,7 @@ async def on_new_chat_members(client: Client, message: Message):
             # Optional welcome message in group
             try:
                 await message.reply_text(
-                    f"Thanks for adding me to **{chat_title}**!\nUse `/help` to get started.",
+                    f"Thanks for adding me to <b>{chat_title}</b>!\nUse <code>/help</code> to get started.",
                 )
             except Exception as e:
                 print(f"[WELCOME ERROR] Failed to send welcome message: {e}")
