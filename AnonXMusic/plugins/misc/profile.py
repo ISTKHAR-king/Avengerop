@@ -238,7 +238,7 @@ async def show_top_users(client: Client, cq: CallbackQuery):
     if not leaderboard:
         return await cq.message.edit_text("No user data found!")
 
-    text = "📈 𝗚𝗟𝗢𝗕𝗔𝗟 𝗟𝗘𝗔𝗗𝗘𝗥𝗕𝗢𝗔𝗥𝗗 𝘁𝗼𝗱𝗮𝘆 | 🌍\n\n"
+    text = "📈 𝗧𝗼𝗽 𝗠𝘂𝘀𝗶𝗰 𝗟𝗼𝘃𝗲𝗿𝘀 | 🌍\n\n"
     for i, (user_id, count) in enumerate(leaderboard, 1):
         try:
             user = await client.get_users(int(user_id))
