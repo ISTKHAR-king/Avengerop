@@ -73,7 +73,7 @@ async def sudoers_list(client, message: Message, _):
                 text += f"{count}️⃣ {mention}\n"
                 buttons.append([
                     InlineKeyboardButton(
-                        text=f"❌ Remove {mention}",
+                        text=f"Remove {mention}",
                         callback_data=f"remove_sudo:{user.id}"
                     )
                 ])
