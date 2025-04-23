@@ -174,8 +174,8 @@ queue_6 : "<b>🕚 ᴅᴜʀᴀᴛɪᴏɴ :</b> ᴜɴᴋɴᴏᴡɴ ᴅᴜʀᴀᴛ
 queue_7 : "\nᴄʟɪᴄᴋ ᴏɴ ʙᴜᴛᴛᴏɴ ʙᴇʟᴏᴡ ᴛᴏ ɢᴇᴛ ᴡʜᴏʟᴇ ǫᴜᴇᴜᴇᴅ ʟɪsᴛ."
 queue_8 : "<b>{0} ᴘʟᴀʏᴇʀ</b>\n\n🎄 <b>sᴛʀᴇᴀᴍɪɴɢ :</b> {1}\n\n🔗 <b>sᴛʀᴇᴀᴍ ᴛʏᴘᴇ :</b> {2}\n🥀 <b>ʀᴇǫᴜᴇsᴛᴇᴅ ʙʏ :</b> {3}\n{4}"
 
-stream_1 = "✨ <b><u>Now Playing</u>!</b>\n\n🎶 <b>Track:</b> <a href='{0}'><i>{1}</i></a>\n⏱️ <b>Duration:</b> <code>{2} minutes</code>\n🧑‍🎤 <b>Requested By:</b> <i>{3}</i>\n\n💫 <b>Sit back, relax, and enjoy the vibe!</b>"
-stream_2 = "🚨 <b><u>We Are Live!</u></b>\n\n🎥 <b>Stream Type:</b> <code>Live Broadcast</code>\n🙋‍♂️ <b>Requested By:</b> <i>{0}</i>\n\n⚡ <b>Jump in and catch the action in real time!</b>\n🌐 <i>Let the good vibes roll!</i>"
+stream_1 : "✨ <b><u>Now Playing</u>!</b>\n\n🎶 <b>Track:</b> <a href='{0}'><i>{1}</i></a>\n⏱️ <b>Duration:</b> <code>{2} minutes</code>\n🧑‍🎤 <b>Requested By:</b> <i>{3}</i>\n\n💫 <b>Sit back, relax, and enjoy the vibe!</b>"
+stream_2 : "🚨 <b><u>We Are Live!</u></b>\n\n🎥 <b>Stream Type:</b> <code>Live Broadcast</code>\n🙋‍♂️ <b>Requested By:</b> <i>{0}</i>\n\n⚡ <b>Jump in and catch the action in real time!</b>\n🌐 <i>Let the good vibes roll!</i>"
 
 
 CLOSE_BUTTON  : "⏹ ᴄʟᴏsᴇ"
