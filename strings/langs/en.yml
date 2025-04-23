@@ -178,7 +178,7 @@ stream_1 : "✨ <b><u>Now Playing</u>!</b>\n\n🎶 <b>Track:</b> <a href='{0}'><
 stream_2 : "🚨 <b><u>We Are Live!</u></b>\n\n🎥 <b>Stream Type:</b> <code>Live Broadcast</code>\n🙋‍♂️ <b>Requested By:</b> <i>{0}</i>\n\n⚡ <b>Jump in and catch the action in real time!</b>\n🌐 <i>Let the good vibes roll!</i>"
 
 
-CLOSE_BUTTON  : "⏹ ᴄʟᴏsᴇ"
+CLOSE_BUTTON  : "⏺ ᴄʟᴏsᴇ"
 BACK_BUTTON : "🔙 ʙᴀᴄᴋ"
 
 S_B_1 : "Aᴅᴅ ᴍᴇ ➕"
@@ -188,8 +188,8 @@ S_B_4 : "Hᴇʟᴘ & Cᴏᴍᴍᴀɴᴅs 📜"
 S_B_5 : "Dᴇᴠᴇʟᴏᴘᴇʀ 🏴‍☠️"
 S_B_6 : "ᴜᴘᴅᴀᴛᴇs 🔔"
 S_B_7 : "Sᴏᴜʀᴄᴇ ᴄᴏᴅᴇ"
-S_B_8 : "👀 ʏᴏᴜᴛᴜʙᴇ 👀"
-S_B_9 : "🥀 sᴜᴩᴩᴏʀᴛ 🥀"
+S_B_8 : "ʏᴏᴜᴛᴜʙᴇ 🎥"
+S_B_9 : "sᴜᴩᴩᴏʀᴛ 💬 "
 S_B_0 : "ʜᴏᴡ ᴛᴏ ᴄʟᴏɴᴇ 🤖"
 
 
