@@ -109,7 +109,7 @@ async def bot_stats(client, CallbackQuery, _):
         f"• Disk : <code>{total:.2f}GB</code> Total | <code>{used:.2f} GB</code> Used | <code>{free:.2f} GB</code> Free\n"
         f"• DB Size : <code>{datasize:.2f} MB</code>\n"
         f"• Storage Used : <code>{storage:.2f} MB</code>\n"
-        f"• Collections : <code>{call['collections']}</code> | Objects : `{call['objects']}`\n\n"
+        f"• Collections : <code>{call['collections']}</code> | Objects : <code>{call['objects']}</code>\n\n"
         f"<b>👥 Usage:</b>\n"
         f"• Served Chats : <code>{served_chats}</code>\n"
         f"• Served Users : <code>{served_users}</code>\n\n"
