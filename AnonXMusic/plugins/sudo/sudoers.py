@@ -60,7 +60,7 @@ async def sudoers_list(client, message: Message, _):
 
     try:
         owner = await app.get_users(OWNER_ID)
-        text += f"1️⃣<b> <a herf=tg://user?id=7765692814>राघव अगरवाल 🍥</a></b>\n"
+        text += f"1️⃣<b> <a herf=tg://user?id=7765692814>𝐒ᴍᴀᴜɢ 🇷🇺</a></b>\n"
     except:
         text += "1️⃣ Owner (User not found)\n"
 
