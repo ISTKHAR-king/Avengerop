@@ -40,12 +40,22 @@ def add_rounded_corners(im, radius):
     return im
 
 
+def fit_text(draw, text, max_width, font_path, start_size, min_size):
+    size = start_size
+    while size >= min_size:
+        font = ImageFont.truetype(font_path, size)
+        if draw.textlength(text, font=font) <= max_width:
+            return font
+        size -= 1
+    return ImageFont.truetype(font_path, min_size)
+
+
 async def get_thumb(videoid: str):
     url = f"https://www.youtube.com/watch?v={videoid}"
     try:
         results = VideosSearch(url, limit=1)
         for result in (await results.next())["result"]:
-            title = re.sub("\W+", " ", result.get("title", "Unsupported Title")).title()
+            title = re.sub(r"\W+", " ", result.get("title", "Unsupported Title")).title()
             duration = result.get("duration", "Unknown Mins")
             thumbnail = result["thumbnails"][0]["url"].split("?")[0]
             views = result.get("viewCount", {}).get("short", "Unknown Views")
@@ -83,17 +93,19 @@ async def get_thumb(videoid: str):
         background.paste(logo, (100, 150))
 
         draw = ImageDraw.Draw(background)
-        font_title_large = ImageFont.truetype("AnonXMusic/assets/font3.ttf", 42)
-        font_title_small = ImageFont.truetype("AnonXMusic/assets/font3.ttf", 36)
         font_info = ImageFont.truetype("AnonXMusic/assets/font2.ttf", 28)
         font_time = ImageFont.truetype("AnonXMusic/assets/font2.ttf", 26)
+        font_path = "AnonXMusic/assets/font3.ttf"
 
+        title_max_width = 540
         title_lines = truncate(title, 35)
 
-        # Draw title smaller but cleaner
-        draw.text((565, 180), title_lines[0], (255, 255, 255), font=font_title_large)
+        title_font1 = fit_text(draw, title_lines[0], title_max_width, font_path, 42, 28)
+        draw.text((565, 180), title_lines[0], (255, 255, 255), font=title_font1)
+
         if title_lines[1]:
-            draw.text((565, 225), title_lines[1], (200, 200, 200), font=font_title_small)
+            title_font2 = fit_text(draw, title_lines[1], title_max_width, font_path, 36, 24)
+            draw.text((565, 225), title_lines[1], (220, 220, 220), font=title_font2)
 
         draw.text((565, 305), f"{channel} | {views}", (240, 240, 240), font=font_info)
 
