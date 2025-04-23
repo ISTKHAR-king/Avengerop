@@ -101,11 +101,11 @@ async def broadcast_command(client, message, _):
 
             progress_bar = f"[{'█' * int(percent//5)}{'░' * (20-int(percent//5))}]"
             await status_msg.edit_text(
-                f"<b>Broadcast Progress:</b>\n"
-                f"{progress_bar} <code>{percent}%</code>"
-                f"Sent: <code>{sent_count}</code> 🟢\n"
-                f"Failed: <code>{failed_count}</code> 🔴\n"
-                f"ETA: <code>{eta_formatted}</code> ⏳"
+                f"<b>🔔 Broadcast Progress:</b>\n"
+                f"{progress_bar} <code>{percent}%</code>\n"
+                f"✅ Sent: <code>{sent_count}</code> 🟢\n"
+                f"⛔ Failed: <code>{failed_count}</code> 🔴\n"
+                f"🕰 ETA: <code>{eta_formatted}</code> ⏳"
             )
 
     await broadcast_targets(targets)
