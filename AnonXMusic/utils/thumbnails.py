@@ -15,14 +15,14 @@ def changeImageSize(maxWidth, maxHeight, image):
     return image.resize(newSize, Image.ANTIALIAS)
 
 
-def truncate(text):
-    list = text.split(" ")
+def truncate(text, max_chars=50):
+    words = text.split()
     text1, text2 = "", ""
-    for i in list:
-        if len(text1) + len(i) < 30:
-            text1 += " " + i
-        elif len(text2) + len(i) < 30:
-            text2 += " " + i
+    for word in words:
+        if len(text1 + " " + word) <= max_chars and not text2:
+            text1 += " " + word
+        else:
+            text2 += " " + word
     return [text1.strip(), text2.strip()]
 
 
@@ -45,25 +45,11 @@ async def get_thumb(videoid: str):
     try:
         results = VideosSearch(url, limit=1)
         for result in (await results.next())["result"]:
-            try:
-                title = result["title"]
-                title = re.sub("\W+", " ", title)
-                title = title.title()
-            except:
-                title = "Unsupported Title"
-            try:
-                duration = result["duration"]
-            except:
-                duration = "Unknown Mins"
+            title = re.sub("\W+", " ", result.get("title", "Unsupported Title")).title()
+            duration = result.get("duration", "Unknown Mins")
             thumbnail = result["thumbnails"][0]["url"].split("?")[0]
-            try:
-                views = result["viewCount"]["short"]
-            except:
-                views = "Unknown Views"
-            try:
-                channel = result["channel"]["name"]
-            except:
-                channel = "Unknown Channel"
+            views = result.get("viewCount", {}).get("short", "Unknown Views")
+            channel = result.get("channel", {}).get("name", "Unknown Channel")
 
         async with aiohttp.ClientSession() as session:
             async with session.get(thumbnail) as resp:
@@ -77,7 +63,6 @@ async def get_thumb(videoid: str):
         image1 = changeImageSize(1280, 720, youtube)
         image2 = image1.convert("RGBA")
 
-        # Create a soft gradient background
         gradient = Image.new("RGBA", image2.size, (0, 0, 0, 255))
         enhancer = ImageEnhance.Brightness(image2.filter(ImageFilter.GaussianBlur(15)))
         blurred = enhancer.enhance(0.5)
@@ -85,57 +70,53 @@ async def get_thumb(videoid: str):
 
         Xcenter = image2.width / 2
         Ycenter = image2.height / 2
-        x1 = Xcenter - 200
-        y1 = Ycenter - 200
-        x2 = Xcenter + 200
-        y2 = Ycenter + 200
-        rand = (random.randint(100, 255), random.randint(100, 255), random.randint(100, 255))
-        logo = youtube.crop((x1, y1, x2, y2))
+        logo = youtube.crop((Xcenter - 200, Ycenter - 200, Xcenter + 200, Ycenter + 200))
         logo.thumbnail((340, 340), Image.ANTIALIAS)
 
-        # Add soft shadow
         shadow = Image.new("RGBA", logo.size, (0, 0, 0, 0))
         shadow_draw = ImageDraw.Draw(shadow)
         shadow_draw.ellipse((0, 0, logo.size[0], logo.size[1]), fill=(0, 0, 0, 100))
         background.paste(shadow, (110, 160), shadow)
 
-        # Add logo with border
+        rand = (random.randint(100, 255), random.randint(100, 255), random.randint(100, 255))
         logo = ImageOps.expand(logo, border=15, fill=rand)
         background.paste(logo, (100, 150))
 
         draw = ImageDraw.Draw(background)
-        arial = ImageFont.truetype("AnonXMusic/assets/font2.ttf", 30)
-        font = ImageFont.truetype("AnonXMusic/assets/font.ttf", 30)
-        tfont = ImageFont.truetype("AnonXMusic/assets/font3.ttf", 45)
+        font_title_large = ImageFont.truetype("AnonXMusic/assets/font3.ttf", 42)
+        font_title_small = ImageFont.truetype("AnonXMusic/assets/font3.ttf", 36)
+        font_info = ImageFont.truetype("AnonXMusic/assets/font2.ttf", 28)
+        font_time = ImageFont.truetype("AnonXMusic/assets/font2.ttf", 26)
 
-        stitle = truncate(title)
-        draw.text((565, 180), stitle[0], (255, 255, 255), font=tfont)
-        draw.text((565, 230), stitle[1], (255, 255, 255), font=tfont)
-        draw.text((565, 320), f"{channel} | {views[:23]}", (255, 255, 255), font=arial)
+        title_lines = truncate(title, 35)
 
-        draw.line([(565, 385), (1130, 385)], fill="white", width=8)
-        draw.line([(565, 385), (999, 385)], fill=rand, width=8)
-        draw.ellipse([(999, 375), (1020, 395)], outline=rand, fill=rand, width=15)
-        draw.text((565, 400), "00:00", (255, 255, 255), font=arial)
-        draw.text((1080, 400), f"{duration[:23]}", (255, 255, 255), font=arial)
+        # Draw title smaller but cleaner
+        draw.text((565, 180), title_lines[0], (255, 255, 255), font=font_title_large)
+        if title_lines[1]:
+            draw.text((565, 225), title_lines[1], (200, 200, 200), font=font_title_small)
+
+        draw.text((565, 305), f"{channel} | {views}", (240, 240, 240), font=font_info)
+
+        draw.line([(565, 370), (1130, 370)], fill="white", width=6)
+        draw.line([(565, 370), (990, 370)], fill=rand, width=6)
+        draw.ellipse([(990, 362), (1010, 382)], outline=rand, fill=rand, width=12)
+
+        draw.text((565, 385), "00:00", (255, 255, 255), font=font_time)
+        draw.text((1080, 385), duration, (255, 255, 255), font=font_time)
 
         picons = icons.resize((580, 62))
-        background.paste(picons, (565, 450), picons)
+        background.paste(picons, (565, 430), picons)
 
-        # Watermark: Team DeadlineTech (glowing)
         watermark_font = ImageFont.truetype("AnonXMusic/assets/font2.ttf", 24)
         watermark_text = "Team DeadlineTech"
         text_size = draw.textsize(watermark_text, font=watermark_font)
-        margin = 25
-        x = background.width - text_size[0] - margin
-        y = background.height - text_size[1] - margin
-
+        x = background.width - text_size[0] - 25
+        y = background.height - text_size[1] - 25
         glow_pos = [(x + dx, y + dy) for dx in (-1, 1) for dy in (-1, 1)]
         for pos in glow_pos:
             draw.text(pos, watermark_text, font=watermark_font, fill=(0, 0, 0, 180))
         draw.text((x, y), watermark_text, font=watermark_font, fill=(255, 255, 255, 240))
 
-        # Rounded corners for final thumbnail
         background = add_rounded_corners(background, 30)
 
         try:
