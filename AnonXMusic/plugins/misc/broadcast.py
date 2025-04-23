@@ -37,8 +37,8 @@ async def broadcast_command(client, message, _):
     mode = "forward" if "-forward" in command_text else "copy"
 
     if "-all" in command_text:
-        target_chats = await get_served_chats()
         target_users = await get_served_users()
+        target_chats = await get_served_chats()
     elif "-users" in command_text:
         target_chats = []
         target_users = await get_served_users()
