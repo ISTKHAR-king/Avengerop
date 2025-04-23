@@ -17,20 +17,19 @@ def changeImageSize(maxWidth, maxHeight, image):
     newImage = image.resize((newWidth, newHeight))
     return newImage
 
+
 def truncate(text):
     list = text.split(" ")
     text1, text2 = "", ""
     for i in list:
-        if len(text1) + len(i) < 30:        
+        if len(text1) + len(i) < 30:
             text1 += " " + i
-        elif len(text2) + len(i) < 30:       
+        elif len(text2) + len(i) < 30:
             text2 += " " + i
     return [text1.strip(), text2.strip()]
 
-async def get_thumb(videoid: str):
-    #if os.path.isfile(f"cache/{videoid}.png"):
-    #    return f"cache/{videoid}.png"
 
+async def get_thumb(videoid: str):
     url = f"https://www.youtube.com/watch?v={videoid}"
     try:
         results = VideosSearch(url, limit=1)
@@ -58,9 +57,7 @@ async def get_thumb(videoid: str):
         async with aiohttp.ClientSession() as session:
             async with session.get(thumbnail) as resp:
                 if resp.status == 200:
-                    f = await aiofiles.open(
-                        f"cache/thumb{videoid}.png", mode="wb"
-                    )
+                    f = await aiofiles.open(f"cache/thumb{videoid}.png", mode="wb")
                     await f.write(await resp.read())
                     await f.close()
 
@@ -90,61 +87,33 @@ async def get_thumb(videoid: str):
         tfont = ImageFont.truetype("AnonXMusic/assets/font3.ttf", 45)
 
         stitle = truncate(title)
-        draw.text(
-            (565, 180),
-            stitle[0],
-            (255, 255, 255),
-            font=tfont,
-        )
-        draw.text(
-            (565, 230),
-            stitle[1],
-            (255, 255, 255),
-            font=tfont,
-        )
-        draw.text(
-            (565, 320),
-            f"{channel} | {views[:23]}",
-            (255, 255, 255),
-            font=arial,
-        )
-        draw.line(
-             [(565, 385), (1130, 385)],
-             fill="white",
-             width=8,
-             joint="curve",
-        )
-        draw.line(
-             [(565, 385), (999, 385)],
-             fill=rand,
-             width=8,
-             joint="curve",
-        )
-        draw.ellipse(
-            [(999, 375), (1020, 395)],
-            outline=rand,
-            fill=rand,
-            width=15,
-        )
-        draw.text(
-            (565, 400),
-            "00:00",
-            (255, 255, 255),
-            font=arial,
-        )
-        draw.text(
-            (1080, 400),
-            f"{duration[:23]}",
-            (255, 255, 255),
-            font=arial,
-        )
+        draw.text((565, 180), stitle[0], (255, 255, 255), font=tfont)
+        draw.text((565, 230), stitle[1], (255, 255, 255), font=tfont)
+        draw.text((565, 320), f"{channel} | {views[:23]}", (255, 255, 255), font=arial)
+
+        draw.line([(565, 385), (1130, 385)], fill="white", width=8, joint="curve")
+        draw.line([(565, 385), (999, 385)], fill=rand, width=8, joint="curve")
+        draw.ellipse([(999, 375), (1020, 395)], outline=rand, fill=rand, width=15)
+        draw.text((565, 400), "00:00", (255, 255, 255), font=arial)
+        draw.text((1080, 400), f"{duration[:23]}", (255, 255, 255), font=arial)
+
         picons = icons.resize((580, 62))
         background.paste(picons, (565, 450), picons)
+
+        # Watermark: Team DeadlineTech
+        watermark_font = ImageFont.truetype("AnonXMusic/assets/font2.ttf", 24)
+        watermark_text = "Team DeadlineTech"
+        text_size = draw.textsize(watermark_text, font=watermark_font)
+        margin = 20
+        x = background.width - text_size[0] - margin
+        y = background.height - text_size[1] - margin
+        draw.text((x, y), watermark_text, font=watermark_font, fill=(255, 255, 255, 180))
 
         try:
             os.remove(f"cache/thumb{videoid}.png")
         except:
             pass
+
         tpath = f"cache/{videoid}.png"
         background.save(tpath)
         return tpath
