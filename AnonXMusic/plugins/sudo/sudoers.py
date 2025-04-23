@@ -55,12 +55,12 @@ async def userdel(client, message: Message, _):
 @app.on_message(filters.command(["sudolist", "listsudo", "sudoers"]) & ~BANNED_USERS)
 @language
 async def sudoers_list(client, message: Message, _):
-    text = "🧑‍💻 **SUDO USERS LIST**\n\n"
+    text = "🧑‍💻<u><b>SUDO USERS LIST</b></u>\n\n"
     buttons = []
 
     try:
         owner = await app.get_users(OWNER_ID)
-        text += f"1️⃣ {owner.mention if owner.mention else owner.first_name} [OWNER]\n"
+        text += f"1️⃣<b> <a herf=tg://user?id=7765692814>राघव अगरवाल 🍥</a></b>\n"
     except:
         text += "1️⃣ Owner (User not found)\n"
 
@@ -69,7 +69,7 @@ async def sudoers_list(client, message: Message, _):
         if user_id != OWNER_ID:
             try:
                 user = await app.get_users(user_id)
-                mention = user.mention if user.mention else user.first_name
+                mention = user.first_name
                 text += f"{count}️⃣ {mention}\n"
                 buttons.append([
                     InlineKeyboardButton(
