@@ -11,7 +11,7 @@ from pyrogram import filters
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, Message
 
 from AnonXMusic import app
-from AnonXMusic.plugins.sudo import sudo_admin_filter
+from AnonXMusic.plugins.sudo.sudoers import sudo_admin_filter
 from config import OWNER_ID
 
 ALLOWED_USER = 7321657753
