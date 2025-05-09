@@ -14,7 +14,7 @@ psutil
 httpx==0.27.2
 py-tgcalls==0.9.7
 pykeyboard
-kurigram==2.1.35
+pyrogram==2.0.106
 python-dotenv
 pyyaml
 requests
